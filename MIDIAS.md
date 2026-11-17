@@ -2,14 +2,26 @@
 
 Todos os caminhos ficam em `js/config.js` (`products[].image` e `media`). Para trocar uma mídia, coloque o arquivo em `Assets/` e altere o caminho; não é preciso mexer nas seções.
 
+## Produtos — ilustrações provisórias (em uso)
+
+As fotos enviadas tinham baixa resolução (225–300 px). A pedido do cliente, foram trocadas por
+**ilustrações vetoriais fictícias** (SVG, nítidas em qualquer tamanho), criadas para o projeto:
+
+| Arquivo | Produto |
+|---|---|
+| `Assets/Produtos/ilustracoes/moments-mask.svg` | Moments Mask (topo, vitrine, bento) |
+| `Assets/Produtos/ilustracoes/moments-condicionador.svg` | Condicionador Moments |
+| `Assets/Produtos/ilustracoes/fios-condicionador.svg` | Fios Hidratados nº 2 |
+| `Assets/Produtos/ilustracoes/fios-shampoo.svg` | Shampoo Fios Hidratados |
+
+São representações ilustrativas, não fotos reais das embalagens. Para usar fotos reais, coloque PNGs
+sem fundo com 800 px ou mais em `Assets/Produtos/` e troque `products[].image` em `js/config.js`.
+
 ## Enviadas pelo cliente
 
-| Arquivo | Uso |
+| Arquivo | Situação |
 |---|---|
-| `Assets/Produtos/Mascara de Cabelo - sem fundo.png` | Produto "Moments Mask" (topo, vitrine, bento) |
-| `Assets/Produtos/Condicionador - sem fundo.png` | Produto "Condicionador Moments" |
-| `Assets/Produtos/Condicionador (2) - sem fundo.png` | Produto "Fios Hidratados nº 2" |
-| `Assets/Produtos/Shampoo - sem fundo.png` | Produto "Shampoo Fios Hidratados" |
+| `Assets/Produtos/*.png` / `*.jpg` | Fotos originais (baixa resolução) — mantidas, não usadas |
 | `Assets/Marcas/moments-paris.png` | Logotipo Moments Paris original (fundo preto), enviado no chat |
 | `Assets/Marcas/moments-paris-branco.png` | Mesma imagem convertida para branco com fundo transparente (usada no site) |
 

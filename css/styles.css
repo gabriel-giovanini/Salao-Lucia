@@ -414,3 +414,17 @@ html:not(.js-ready) .preloader { animation: plOut 1s var(--ease-out) 4s forwards
 }
 .liquid span:nth-child(n) { animation-play-state: paused !important; }
 .bento-cell:hover .liquid span:nth-child(n) { animation-play-state: running !important; }
+
+/* impede que elementos decorativos largos alarguem a página no celular */
+html, body { overflow-x: clip; max-width: 100%; }
+@media (max-width: 639px) { .preloader .pl-sub { font-size: .62rem; letter-spacing: .18em; gap: 10px; } .preloader .pl-word { font-size: 2.1rem; } }
+
+/* revelação: só usa recorte nas animações de "cortina"; nos demais casos não corta o que sai do card */
+.rv.in { clip-path: none; }
+.rv.in[data-anim="clip"], .rv.in[data-anim="clipx"] { clip-path: inset(0 0 0 0); }
+/* palco do topo respeita a altura da tela (frascos altos) */
+.stage { width: min(74vw, 460px, 62svh); }
+@media (max-width: 1023px) { .stage { width: min(64vw, 340px, 46svh); } }
+/* imagem do palco sempre cabe no quadrado, qualquer proporção */
+.stage-item { display: block; }
+.stage-item img { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; }

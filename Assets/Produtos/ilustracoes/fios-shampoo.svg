@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 980" role="img" aria-label="Ilustração: frasco preto de shampoo com detalhes dourados e válvula pump">
+  <defs>
+    <linearGradient id="body" x1="0" x2="1">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset=".13" stop-color="#3b3b3b"/>
+      <stop offset=".24" stop-color="#151515"/>
+      <stop offset=".72" stop-color="#0b0b0b"/>
+      <stop offset=".9" stop-color="#2a2a2a"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <linearGradient id="pump" x1="0" x2="1">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset=".3" stop-color="#444"/>
+      <stop offset=".55" stop-color="#141414"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7e3ad"/>
+      <stop offset=".35" stop-color="#d4a752"/>
+      <stop offset=".6" stop-color="#fbe9b9"/>
+      <stop offset="1" stop-color="#a87a2c"/>
+    </linearGradient>
+    <linearGradient id="spec" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>
+    <clipPath id="clip"><path d="M110 360 Q110 300 180 280 Q225 266 225 236 H335 Q335 266 380 280 Q450 300 450 360 V880 Q450 920 410 920 H150 Q110 920 110 880 Z"/></clipPath>
+  </defs>
+
+  <ellipse cx="280" cy="935" rx="230" ry="26" fill="#000" opacity=".6" filter="url(#soft)"/>
+
+  <!-- pump -->
+  <path d="M271 120 H289 V205 H271 Z" fill="url(#pump)"/>
+  <path d="M206 92 Q206 76 222 76 H330 Q346 76 346 92 V122 H206 Z" fill="url(#pump)"/>
+  <path d="M206 84 H118 Q102 84 102 97 Q102 106 111 106 H206 Z" fill="url(#pump)"/>
+  <rect x="222" y="80" width="10" height="38" fill="#fff" opacity=".2"/>
+  <path d="M214 186 H346 V242 H214 Z" fill="url(#pump)"/>
+  <rect x="214" y="236" width="132" height="6" fill="url(#gold)"/>
+
+  <!-- frasco -->
+  <path d="M110 360 Q110 300 180 280 Q225 266 225 236 H335 Q335 266 380 280 Q450 300 450 360 V880 Q450 920 410 920 H150 Q110 920 110 880 Z" fill="url(#body)"/>
+  <g clip-path="url(#clip)">
+    <circle cx="280" cy="400" r="26" fill="none" stroke="url(#gold)" stroke-width="3"/>
+    <text x="280" y="409" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-style="italic" fill="url(#gold)">F</text>
+    <text x="280" y="545" text-anchor="middle" font-family="Georgia, serif" font-size="120" font-style="italic" fill="url(#gold)">fios</text>
+    <text x="280" y="600" text-anchor="middle" font-family="Georgia, serif" font-size="46" font-style="italic" fill="url(#gold)">hidratados</text>
+    <rect x="170" y="625" width="220" height="2" fill="url(#gold)"/>
+    <text x="280" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" letter-spacing="5" fill="#f1e2bd">SHAMPOO</text>
+    <text x="280" y="688" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" letter-spacing="3" fill="#bfa77a">LIMPEZA SUAVE · HIDRATAÇÃO</text>
+    <text x="400" y="860" text-anchor="end" font-family="Georgia, serif" font-size="150" fill="url(#gold)">1</text>
+    <text x="150" y="860" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e9d29c">2,5L</text>
+    <rect x="145" y="270" width="34" height="660" fill="url(#spec)"/>
+    <rect x="398" y="320" width="12" height="580" fill="url(#spec)" opacity=".6"/>
+  </g>
+</svg>
