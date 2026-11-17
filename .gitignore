@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.vercel/
+.DS_Store
+Thumbs.db
+# material de referência (vídeo de 12 MB de outro site)
+Refs/

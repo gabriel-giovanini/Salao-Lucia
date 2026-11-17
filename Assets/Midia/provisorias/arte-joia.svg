@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Arte abstrata provisória: joia lapidada">
+  <defs>
+    <radialGradient id="g" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#9fe3d2" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#9fe3d2" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="t" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eafff8"/>
+      <stop offset="1" stop-color="#5cc4a8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="300" cy="300" r="290" fill="url(#g)"/>
+  <g stroke="#eafff8" stroke-opacity=".55" stroke-width="1.5" stroke-linejoin="round">
+    <polygon points="170,230 230,160 370,160 430,230" fill="url(#t)"/>
+    <polygon points="230,160 270,230 330,230 370,160" fill="#d4fff2"/>
+    <polygon points="170,230 270,230 300,480" fill="#3aa58b"/>
+    <polygon points="270,230 330,230 300,480" fill="#8fe6cf"/>
+    <polygon points="330,230 430,230 300,480" fill="#1f7864"/>
+    <polygon points="170,230 230,160 270,230" fill="#b6f5e3"/>
+    <polygon points="330,230 370,160 430,230" fill="#62c9ad"/>
+  </g>
+  <polygon points="285,180 300,170 330,180 300,200" fill="#fff" opacity=".8"/>
+  <g fill="#fff">
+    <path d="M460 140 l7 19 19 7 -19 7 -7 19 -7 -19 -19 -7 19 -7z"/>
+    <path d="M140 400 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" opacity=".75"/>
+  </g>
+</svg>

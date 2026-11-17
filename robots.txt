@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Adicione após definir o domínio definitivo (ver README.md):
+# Sitemap: https://SEU-DOMINIO/sitemap.xml

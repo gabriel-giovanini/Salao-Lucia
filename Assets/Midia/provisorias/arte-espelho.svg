@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Arte abstrata provisória: espelho em arco iridescente">
+  <defs>
+    <linearGradient id="i" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffb3c7"/>
+      <stop offset=".25" stop-color="#ffd59e"/>
+      <stop offset=".5" stop-color="#b4f1d0"/>
+      <stop offset=".75" stop-color="#9ec5ff"/>
+      <stop offset="1" stop-color="#c9a7ff"/>
+    </linearGradient>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6e7ff"/>
+      <stop offset="1" stop-color="#7b62c9"/>
+    </linearGradient>
+    <linearGradient id="sh" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="g" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#b9a7ff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#b9a7ff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="m"><path d="M200 520 V 250 A 100 100 0 0 1 400 250 V 520 Z"/></clipPath>
+  </defs>
+  <circle cx="300" cy="300" r="290" fill="url(#g)"/>
+  <path d="M180 540 V 250 A 120 120 0 0 1 420 250 V 540 Z" fill="url(#f)"/>
+  <path d="M200 520 V 250 A 100 100 0 0 1 400 250 V 520 Z" fill="url(#i)" opacity=".9"/>
+  <g clip-path="url(#m)">
+    <rect x="120" y="100" width="70" height="520" fill="url(#sh)" transform="rotate(24 300 300)"/>
+    <rect x="250" y="100" width="28" height="520" fill="url(#sh)" transform="rotate(24 300 300)"/>
+  </g>
+  <g fill="#fff">
+    <path d="M470 150 l8 22 22 8 -22 8 -8 22 -8 -22 -22 -8 22 -8z"/>
+    <path d="M120 200 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5z" opacity=".8"/>
+    <path d="M460 420 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4z" opacity=".7"/>
+  </g>
+</svg>
