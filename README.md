@@ -34,7 +34,14 @@ scripts/              servidor local, verificação e build
 tests/                testes da mensagem do WhatsApp
 ```
 
-Bibliotecas via CDN: Tailwind CSS 3.4.16, GSAP 3.12.5 + ScrollTrigger, Lenis 1.1.13, Lucide 0.460.0, Google Fonts (Fraunces + Manrope).
+Bibliotecas via CDN: GSAP 3.12.5 + ScrollTrigger, Lenis 1.1.13, Lucide 0.460.0, Google Fonts (Montserrat, DM Sans, Plus Jakarta Sans, Syne).
+O Tailwind CSS 3.4.16 é **estático** em `css/tailwind.css`. Se adicionar classes novas do Tailwind no HTML ou no JS, regenere:
+
+```bash
+npm run tailwind
+```
+
+(usa o Microsoft Edge em modo headless; precisa de internet para baixar o compilador do Tailwind).
 Se algum CDN falhar, o conteúdo continua visível e o formulário continua funcionando.
 
 ## Como atualizar os dados (js/config.js)

@@ -80,7 +80,9 @@ window.SITE_CONFIG = {
     momentsLogo: "Assets/Marcas/moments-paris-branco.png",
     ogImage: { src: "Assets/Midia/provisorias/og-image.png", provisional: true },
     video: {
-      src: "Assets/Midia/video/bastidores.mp4",
+      // Coloque o arquivo em Assets/Midia/video/ e preencha: src: "Assets/Midia/video/bastidores.mp4"
+      // (vazio = não pede o vídeo, evitando erro 404 no console; o fundo animado aparece no lugar)
+      src: null,
       poster: "Assets/Midia/provisorias/textura-seda.svg",
       provisional: true,
     },
@@ -113,7 +115,9 @@ window.SITE_CONFIG = {
       brand: "Moments Paris",
       category: "moments",
       volume: "200g",
-      image: "Assets/Produtos/best-girl-moments.png",
+      image: "Assets/Produtos/otimizadas/best-girl-moments.webp", // recortada + WebP (original: Assets/Produtos/best-girl-moments.png)
+      thumb: "Assets/Produtos/otimizadas/best-girl-moments-300.webp", // seletores e miniatura
+      pretrimmed: true, // já recortada: o topo não precisa recortar de novo
       description: "Hidratante corporal perfumado Best Girl da Moments Paris (200 g). Peça com a consultora e consulte valor e disponibilidade pelo WhatsApp.",
       watermark: "MOMENTS",
       colors: ["#f1cf8a", "#9a6a2a", "#140c05"], // [claro, médio, escuro] — fundo do topo
@@ -136,7 +140,9 @@ window.SITE_CONFIG = {
       brand: "Moments Paris",
       category: "moments",
       volume: "30 cáps",
-      image: "Assets/Produtos/cabelo-pele-unhas.png",
+      image: "Assets/Produtos/otimizadas/cabelo-pele-unhas.webp", // recortada + WebP (original: Assets/Produtos/cabelo-pele-unhas.png)
+      thumb: "Assets/Produtos/otimizadas/cabelo-pele-unhas-300.webp", // seletores e miniatura
+      pretrimmed: true, // já recortada: o topo não precisa recortar de novo
       description: "Suplemento alimentar Moments Paris rico em biotina e antioxidantes (30 cápsulas · 720 mg). Zero açúcares e sem glúten. Consulte valor e disponibilidade.",
       watermark: "PARIS",
       colors: ["#c98bff", "#6a1f9e", "#13051c"], // [claro, médio, escuro] — fundo do topo
@@ -159,7 +165,9 @@ window.SITE_CONFIG = {
       brand: "Vogens Profissional",
       category: "vogens",
       volume: "500g",
-      image: "Assets/Produtos/honey-mask.png",
+      image: "Assets/Produtos/otimizadas/honey-mask.webp", // recortada + WebP (original: Assets/Produtos/honey-mask.png)
+      thumb: "Assets/Produtos/otimizadas/honey-mask-300.webp", // seletores e miniatura
+      pretrimmed: true, // já recortada: o topo não precisa recortar de novo
       description: "Máscara capilar biotecnológica com ação queratina, brilho de diamante e D-Pantenol (500 g). Uso profissional para cabelos mais fortes.",
       watermark: "HONEY",
       colors: ["#ffc94d", "#c27a0e", "#241102"], // [claro, médio, escuro] — fundo do topo
@@ -182,7 +190,9 @@ window.SITE_CONFIG = {
       brand: "Vogens Profissional",
       category: "vogens",
       volume: "Kit",
-      image: "Assets/Produtos/kit-honey-guard.png",
+      image: "Assets/Produtos/otimizadas/kit-honey-guard.webp", // recortada + WebP (original: Assets/Produtos/kit-honey-guard.png)
+      thumb: "Assets/Produtos/otimizadas/kit-honey-guard-300.webp", // seletores e miniatura
+      pretrimmed: true, // já recortada: o topo não precisa recortar de novo
       description: "Linha profissional Vogens com Honey Mask (500 g) e tratamento capilar Guard (Shampoo 1000 ml + Condicionador + Leave-in 240 ml). Consulte disponibilidade.",
       watermark: "GUARD",
       colors: ["#e3cf98", "#5a4f3b", "#0b0a08"], // [claro, médio, escuro] — fundo do topo
@@ -205,7 +215,9 @@ window.SITE_CONFIG = {
       brand: "Vogens Profissional",
       category: "vogens",
       volume: "2,5L",
-      image: "Assets/Produtos/fios-hidratados-shampoo.png",
+      image: "Assets/Produtos/otimizadas/fios-hidratados-shampoo.webp", // recortada + WebP (original: Assets/Produtos/fios-hidratados-shampoo.png)
+      thumb: "Assets/Produtos/otimizadas/fios-hidratados-shampoo-300.webp", // seletores e miniatura
+      pretrimmed: true, // já recortada: o topo não precisa recortar de novo
       description: "Shampoo Hidratante Fios Hidratados Passo 1 (2,5 L) — pH balanceado, sem parabenos e brilho intenso. Consulte valor e disponibilidade pelo WhatsApp.",
       watermark: "FIOS",
       colors: ["#ffa857", "#a8460c", "#1a0903"], // [claro, médio, escuro] — fundo do topo

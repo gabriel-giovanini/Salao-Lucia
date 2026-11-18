@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "Site estático do Studio Lucia Ferraz (agendamento pelo WhatsApp).",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "check": "node scripts/check.mjs",
     "test": "node --test tests/whatsapp.test.cjs",
-    "build": "node scripts/check.mjs && node scripts/build.mjs"
+    "build": "node scripts/check.mjs && node scripts/build.mjs",
+    "tailwind": "node scripts/gen-tailwind.mjs"
   }
 }

@@ -1,6 +1,8 @@
 # Studio Lucia Ferraz — regras do projeto
 
-Site estático (HTML + Tailwind CDN + GSAP/ScrollTrigger + Lenis + Lucide), sem back-end.
+Site estático (HTML + Tailwind **compilado em `css/tailwind.css`** + GSAP/ScrollTrigger + Lenis + Lucide), sem back-end.
+**Não volte a usar o Tailwind CDN**: ele compilava no navegador a cada mudança do DOM e travava a página.
+Classe nova do Tailwind no HTML/JS → rode `npm run tailwind` para regenerar o CSS.
 Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de produtos e
 **solicitação de agendamento pelo WhatsApp** (5519971602364).
 
@@ -25,8 +27,12 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
   com contagem de preço e voo do produto até o WhatsApp. Fundo do topo = `colors: [claro, médio, escuro]` do produto.
 - **Exceções pedidas (2026-11-18):** levitação contínua do produto/miniatura e sombra no chão (CSS, só `transform`/`opacity`)
   e granulado estático no topo. CSS no wrapper, GSAP no filho — nunca no mesmo elemento.
-- `prefers-reduced-motion`: o **topo** respeita (desliga levitação, tilt, intro e transições com mola — pedido de 2026-11-18).
-  O resto do site continua animando.
+- `prefers-reduced-motion` (Windows com efeitos de animação desligados): o topo **continua** com abertura, trocas com mola,
+  textos nas máscaras e contagem de preço; só a levitação infinita e o tilt são desligados. Nunca desligar o site inteiro.
+- Performance do topo: anime só `transform`/`opacity`; cores do fundo animadas no `.hx-bg` (nunca no `:root`);
+  sombra com `blur` fixo; nada de `mix-blend-mode`/`backdrop-filter` em elementos grandes ou que se movem;
+  GSAP nunca em elemento com `translate` do CSS (ele congela em pixels — centralize com flex); `busy` com `setTimeout` de segurança.
+- Fotos dos produtos: usar as versões de `Assets/Produtos/otimizadas/` (WebP recortado ≤ 1000 px + miniatura 300 px, `pretrimmed: true`).
 - Revelações: classe `.rv` + `data-anim="up|down|left|right|scale|blur|rotate|flip|clip|clipx|pop"`,
   atraso via `style="--d:.1s"`. Títulos com `data-split` (letra a letra). Funciona via IntersectionObserver
   + CSS, sem depender de CDN.

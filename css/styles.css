@@ -712,3 +712,25 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   .hx-mono { width: 32px; height: 32px; font-size: 13px; }
   .hx-name { font-size: 11px; letter-spacing: .14em; }
 }
+
+/* ==========================================================================
+   PERFORMANCE DO TOPO (2026-11-18)
+   ========================================================================== */
+/* sombra do chão: blur FIXO; a levitação anima só transform + opacity */
+@keyframes hxShadowFast { 0%, 100% { transform: scale(1); opacity: .62; } 50% { transform: scale(.74); opacity: .3; } }
+.hx-shadow { filter: blur(16px); }
+.hx-shadow-anim, .hx-next-shadow { animation-name: hxShadowFast; }
+.hx-next-shadow { filter: blur(4px); }
+/* granulado sem mix-blend-mode (o blend recompunha a tela inteira a cada quadro) */
+.hx-grain { mix-blend-mode: normal; opacity: .05; }
+/* vidro fosco só no menu e nas setas; seletores sem backdrop-filter */
+.hx-pick { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.12); }
+/* sem transição de transform em elementos que o GSAP anima */
+.hx-arrow { transition: background-color .3s, color .3s; }
+.hx-cta { transition: gap .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
+/* will-change só no produto, na levitação e na sombra */
+.hx-float, .hx-shadow-anim { will-change: transform; }
+.hx-item { will-change: transform; }
+
+/* título: cada linha nunca quebra (o hero.js reduz a fonte se uma linha não couber) */
+.hx-title .inner { display: inline-block; white-space: nowrap; }

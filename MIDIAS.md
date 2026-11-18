@@ -2,7 +2,14 @@
 
 Todos os caminhos ficam em `js/config.js` (`products[].image` e `media`). Para trocar uma mídia, coloque o arquivo em `Assets/` e altere o caminho; não é preciso mexer nas seções.
 
-## Produtos — fotos recortadas em alta resolução (em uso)
+## Produtos — versões otimizadas (em uso)
+
+O site usa `Assets/Produtos/otimizadas/<produto>.webp` (já recortada, sem margem transparente, ≤ 1000 px, 37–84 KB)
+e `<produto>-300.webp` (seletores e miniatura, 11–25 KB). Os PNGs abaixo são os originais.
+Para trocar uma foto: coloque o PNG sem fundo, gere as duas versões e ajuste `image`/`thumb` em `js/config.js`
+(ou aponte `image` para o PNG e remova `pretrimmed` — o topo recorta sozinho).
+
+## Produtos — fotos originais recortadas em alta resolução
 
 As 5 embalagens recortadas sem fundo (PNG transparente) enviadas pelo cliente estão em uso no palco 3D do topo e na vitrine:
 

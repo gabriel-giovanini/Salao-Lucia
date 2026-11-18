@@ -16,7 +16,10 @@
   var gsap = window.gsap;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  var animate = !!gsap && !reduced;
+  // "Reduzir movimento" (Windows com efeitos de animação desligados) NÃO desliga o topo:
+  // trocas de produto e textos continuam; só levitação infinita (CSS) e tilt são desligados.
+  var animate = !!gsap;
+  var lite = reduced;
 
   /* ======================================================================
      DADOS — { id, marca, nome, kicker, title[], desc, tagline[], img, scale,
@@ -33,6 +36,8 @@
       desc: p.description || "",
       tagline: p.taglineLines && p.taglineLines.length ? p.taglineLines : [p.tagline || ""],
       img: p.image,
+      thumb: p.thumb || p.image, // versão leve (300 px) para seletores e miniatura
+      pretrimmed: !!p.pretrimmed,
       scale: typeof p.scale === "number" ? p.scale : 1,
       colors: p.colors && p.colors.length >= 3 ? p.colors : ["#e9c27a", "#7a5420", "#120b04"],
       watermark: p.watermark || "LUCIA",
@@ -74,12 +79,21 @@
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   }
   var SRC = PRODUCTS.map(function (p) { return encodeURI(p.img); });
-  var trimCache = {};
+  var THUMB = PRODUCTS.map(function (p) { return encodeURI(p.thumb); });
+  // pré-carrega e decodifica todas as fotos no início (a troca não "pisca")
+  PRODUCTS.forEach(function (p, i) {
+    var im = new Image();
+    im.src = SRC[i];
+    if (im.decode) im.decode().catch(function () {});
+    if (p.thumb !== p.img) { var t = new Image(); t.src = THUMB[i]; }
+  });
+  var trimCache = new Map(); // recorte feito uma única vez por imagem
   // Desenha num canvas, acha o retângulo dos pixels com alpha > 10, recorta e devolve dataURL sem margem.
   function trimmed(i) {
     var p = PRODUCTS[i];
-    if (trimCache[p.img]) return trimCache[p.img];
-    trimCache[p.img] = new Promise(function (resolve) {
+    if (trimCache.has(p.img)) return trimCache.get(p.img);
+    var job = new Promise(function (resolve) {
+      if (p.pretrimmed) { resolve(encodeURI(p.img)); return; } // arquivo já recortado e otimizado
       var im = new Image();
       im.decoding = "async";
       im.onload = function () {
@@ -115,10 +129,11 @@
       im.onerror = function () { resolve(placeholder(p)); };
       im.src = encodeURI(p.img);
     });
-    return trimCache[p.img];
+    trimCache.set(p.img, job);
+    return job;
   }
-  function imgTag(i, alt) {
-    return '<img src="' + SRC[i] + '" data-pid="' + i + '" alt="' + esc(alt || "") + '" draggable="false" />';
+  function imgTag(i, alt, small) {
+    return '<img src="' + (small ? THUMB[i] : SRC[i]) + '" data-pid="' + i + '"' + (small ? ' data-thumb=""' : "") + ' alt="' + esc(alt || "") + '" draggable="false" decoding="async" />';
   }
   // imagem quebrada → placeholder bonito
   hero.addEventListener("error", function (e) {
@@ -132,7 +147,9 @@
   PRODUCTS.forEach(function (p, i) {
     trimmed(i).then(function (url) {
       SRC[i] = url;
-      $$('img[data-pid="' + i + '"]', hero).forEach(function (im) { im.src = url; });
+      if (p.pretrimmed) return;
+      if (p.thumb === p.img) THUMB[i] = url;
+      $$('img[data-pid="' + i + '"]', hero).forEach(function (im) { if (!im.hasAttribute("data-thumb") || p.thumb === p.img) im.src = url; });
     });
   });
 
@@ -163,6 +180,7 @@
 
   var idx = 0;
   var busy = false;
+  var busyTimer = 0;
   var priceNow = { v: num(opt(PRODUCTS[0]).price) || 0, o: num(opt(PRODUCTS[0]).oldPrice) || 0 };
 
   /* ---------------- renderização ---------------- */
@@ -200,17 +218,31 @@
   function renderPicks() {
     picks.innerHTML = PRODUCTS.map(function (p, i) {
       return '<button type="button" class="hx-pick" data-pick="' + i + '" aria-pressed="' + (i === idx) + '" aria-label="' + esc(p.nome) + '">' +
-        '<span class="hx-pick-box">' + imgTag(i) + "</span></button>";
+        '<span class="hx-pick-box">' + imgTag(i, "", true) + "</span></button>";
     }).join("");
     dots.innerHTML = PRODUCTS.map(function (p, i) {
       return '<button type="button" class="hx-dot" data-dot="' + i + '" aria-label="' + esc(p.nome) + '"' + (i === idx ? ' aria-current="true"' : "") + "></button>";
     }).join("");
   }
+  // cada linha do título fica numa linha só; se não couber na coluna, reduz a fonte só o necessário
+  function fitTitle() {
+    title.style.fontSize = "";
+    var max = title.parentElement.clientWidth;
+    var widest = 0;
+    $$(".inner", title).forEach(function (el) { widest = Math.max(widest, el.scrollWidth); });
+    if (max > 0 && widest > max) {
+      title.style.fontSize = (parseFloat(getComputedStyle(title).fontSize) * (max / widest) * 0.97) + "px";
+    }
+  }
+  window.addEventListener("resize", fitTitle);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
+
   function setTexts(i, keepPrice) {
     var p = PRODUCTS[i];
     kicker.textContent = p.kicker;
     title.innerHTML = titleHTML(p.title);
     title.setAttribute("aria-label", p.nome);
+    fitTitle();
     desc.textContent = p.desc;
     cur.textContent = two(i + 1);
     optlabel.textContent = p.optLabel;
@@ -220,13 +252,15 @@
     buy.href = waUrl(p);
     var n = (i + 1) % PRODUCTS.length;
     nextImg.setAttribute("data-pid", n);
-    nextImg.src = SRC[n];
+    nextImg.setAttribute("data-thumb", "");
+    nextImg.src = THUMB[n];
     nextName.textContent = PRODUCTS[n].nome;
     $$(".hx-pick", picks).forEach(function (b, j) { b.setAttribute("aria-pressed", String(j === i)); });
     $$(".hx-dot", dots).forEach(function (b, j) { if (j === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
   }
+  var bgEl = $(".hx-bg", hero);
   function setColors(p, smooth) {
-    var root = document.documentElement;
+    var root = bgEl; // só o fundo (no :root recalculava o estilo da página inteira a cada quadro)
     var vars = { "--c1": p.colors[0], "--c2": p.colors[1], "--c3": p.colors[2] };
     if (smooth && gsap) gsap.to(root, Object.assign({ duration: 1.2, ease: "power2.inOut" }, vars));
     else Object.keys(vars).forEach(function (k) { root.style.setProperty(k, vars[k]); });
@@ -259,6 +293,8 @@
       return;
     }
     busy = true;
+    clearTimeout(busyTimer);
+    busyTimer = setTimeout(function () { busy = false; }, 1500); // segurança: nunca fica preso
     var dist = Math.min(window.innerWidth * 0.6, 760);
     var oldItem = $(".hx-item", holder);
     var newItem = makeItem(i);
@@ -288,7 +324,7 @@
       if (countMode) countPrice(p); else popPicks();
     }, 0.36);
     // libera nova navegação antes da mola terminar
-    tl.add(function () { busy = false; }, 0.85);
+    tl.call(function () { busy = false; }, null, 0.85);
   }
   function next() { goTo(idx + 1, 1); }
   function prev() { goTo(idx - 1, -1); }
@@ -334,7 +370,7 @@
   window.addEventListener("pointercancel", function () { downX = null; });
 
   // tilt 3D + parallax (só mouse)
-  if (animate && fine) {
+  if (animate && fine && !lite) {
     var rx = gsap.quickTo(tilt, "rotationX", { duration: 0.9, ease: "power3" });
     var ry = gsap.quickTo(tilt, "rotationY", { duration: 0.9, ease: "power3" });
     var wx = gsap.quickTo(wmPar, "x", { duration: 1.4, ease: "power3" });
@@ -400,7 +436,10 @@
   }
 
   /* ---------------- abertura (chamada pelo main.js ao fim do preloader) ---------------- */
+  var introDone = false;
   function intro() {
+    if (introDone) return;
+    introDone = true;
     if (!animate) return;
     var item = $(".hx-item", holder);
     var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -418,6 +457,9 @@
       .fromTo(nextIn, { x: 160, opacity: 0 }, { x: 0, opacity: 1, duration: 1.1, ease: "elastic.out(1, .7)" }, 1.1)
       .fromTo([tagline, dots].concat($$(".hx-mini", hero)), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 }, 1.2);
   }
+
+  // rede de segurança: se o preloader/main.js falhar, a abertura roda sozinha
+  setTimeout(intro, 3500);
 
   window.SLFHero = {
     intro: intro,
