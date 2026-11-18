@@ -3,14 +3,9 @@
 Itens ainda não confirmados. Nada abaixo foi inventado no site; onde falta informação, o site usa texto neutro ou chamada pelo WhatsApp.
 
 ## Produtos (topo e vitrine)
-- [ ] **Preços reais** de cada produto. ⚠️ Hoje o site mostra preços **FICTÍCIOS** (R$ 89,90 / 69,90 / 129,90 / 59,90), colocados a pedido para o visual. Trocar antes de publicar.
-- [ ] **Nomes e marcas** exatos. Usados a partir dos rótulos visíveis nas fotos:
-  - Moments Mask — Máscara hidratante (Moments Paris)
-  - Condicionador Moments (Moments Paris) — confirmar nome da linha
-  - Fios Hidratados nº 2 — Condicionador 2,5 L (rótulo indica Chanceller)
-  - Shampoo Fios Hidratados — **marca a confirmar**
+- [ ] **Preços reais** de cada produto. ⚠️ Hoje o site mostra preços **FICTÍCIOS** (Best Girl R$ 79,90 · Cabelo Pele & Unhas R$ 89,90 · Honey Mask R$ 99,90 · Kit Guard & Honey R$ 249,90 · Fios Hidratados nº 1 R$ 129,90), colocados a pedido para o visual. Trocar antes de publicar.
+- [ ] Confirmar nomes, versões e marcas dos 5 produtos (Moments Paris e Vogens Profissional).
 - [ ] Descrições/benefícios oficiais dos produtos (hoje: texto genérico, sem promessas).
-- [ ] **Fotos em resolução maior** (Shampoo e Condicionador Moments têm 225 px; aparecem levemente borradas no palco grande). Ideal: PNG sem fundo com 800 px ou mais.
 - [ ] Outros produtos Moments Paris que devem aparecer.
 
 ## Moments Paris

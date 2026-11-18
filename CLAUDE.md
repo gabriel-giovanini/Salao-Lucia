@@ -7,7 +7,8 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
 ## Identidade visual
 - Base preto & branco (cores da Moments Paris). Acentos femininos/"divo": rosa `--pink #ff4f9a`,
   `--blush #ffc2dc`, brilhos e shimmer. Cada produto tem cor própria (`products[].colors`).
-- Tipografia: Cormorant Garamond (títulos), Cinzel (caps/etiquetas, eco do logo Moments), Manrope (texto).
+- Tipografia: **Plus Jakarta Sans** (títulos e texto) e **Syne** (caps/etiquetas, `.font-caps`). Fontes antigas
+  (Cormorant, Cinzel, Manrope) não são mais usadas.
 - O Studio **não tem logotipo**: usar o nome em texto (wordmark). Logo da Moments Paris em `Assets/Marcas/`.
 - Diferenciais LGBTQ+ / empreendedoras aparecem, mas com destaque menor que Moments Paris.
 
@@ -16,6 +17,8 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
   ou camada animada em tela cheia (o site travava). Animações só ao entrar/sair da tela, ao trocar produto
   ou no hover. Faixas (marquee) se movem apenas enquanto a página rola.
 - O topo é minimalista: foto, marca curta, nome, preço e um botão. Sem descrições longas.
+- Hero = palco 3D com coreografia orbital (produto atual + anterior/próximo em órbita, `data-orbit-*` em `js/main.js`),
+  com arraste por toque e mouse. Todos os produtos usam o mesmo tamanho/base no palco e sombra no chão.
 - **Nunca** desligar animações por `prefers-reduced-motion` (pedido explícito do cliente).
 - Revelações: classe `.rv` + `data-anim="up|down|left|right|scale|blur|rotate|flip|clip|clipx|pop"`,
   atraso via `style="--d:.1s"`. Títulos com `data-split` (letra a letra). Funciona via IntersectionObserver
@@ -38,6 +41,9 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
 - JSON-LD `BeautySalon` só com dados confirmados e sem `aggregateRating`/`review`.
 
 ## Onde editar
+- Produtos atuais (fotos PNG sem fundo em `Assets/Produtos/`, ver MIDIAS.md): Best Girl Moments, Cabelo Pele & Unhas
+  (Moments Paris); Honey Mask 3D, Kit Guard & Honey, Fios Hidratados nº 1 (Vogens Profissional).
+  SVGs em `Assets/Produtos/ilustracoes/` são reserva.
 - Todos os dados: `js/config.js` (produtos, estabelecimento, contatos, horários, serviços, mídias, avaliações, mensagens).
 - Metadados/JSON-LD estáticos: `<head>` de `index.html`.
 - `npm run dev` (http://localhost:5173) · `npm run check` · `npm run build` (gera `dist/`).
