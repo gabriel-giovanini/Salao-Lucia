@@ -687,3 +687,28 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   .hx-left { max-width: 26vw; }
   .hx-price { font-size: clamp(2.2rem, 3.8vw, 3rem); }
 }
+
+/* ---------- centralização sem `translate` nos elementos que o GSAP anima ----------
+   O GSAP converte o `translate` do CSS em pixels fixos; ao mudar a largura (girar o celular,
+   abrir a barra do navegador) o produto ia parar no canto. Centraliza com flexbox. */
+.hx-stage-scroll, .hx-wm-par, .hx-left, .hx-right { translate: none; }
+@media (min-width: 1024px) {
+  .hx-stage-scroll { inset: 0; left: 0; top: 0; display: flex; align-items: center; justify-content: center;
+    padding-top: calc(var(--hx-box) * .08); pointer-events: none; }
+  .hx-stage { pointer-events: auto; }
+  .hx-wm-par { inset: 0; left: 0; top: 0; display: flex; align-items: center; justify-content: center; }
+  .hx-left { top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; pointer-events: none; }
+  .hx-right { top: 0; bottom: 0; justify-content: center; pointer-events: none; }
+  .hx-left > *, .hx-right > * { pointer-events: auto; }
+}
+@media (max-width: 1023px) {
+  .hx-wm-par { left: 0; right: 0; top: 24%; display: flex; justify-content: center; }
+}
+
+/* celulares estreitos: cabeçalho cabe inteiro (logo + 2 botões) */
+@media (max-width: 419px) {
+  .hx-header { padding-left: 12px; padding-right: 12px; }
+  .hx-logo { gap: 8px; }
+  .hx-mono { width: 32px; height: 32px; font-size: 13px; }
+  .hx-name { font-size: 11px; letter-spacing: .14em; }
+}
