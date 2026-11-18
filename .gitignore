@@ -3,5 +3,6 @@ dist/
 .vercel/
 .DS_Store
 Thumbs.db
-# material de referência (vídeo de 12 MB de outro site)
+# material de referência (vídeo de outro site)
 Refs/
+Video/

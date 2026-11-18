@@ -102,59 +102,87 @@ window.SITE_CONFIG = {
   // watermark: palavra gigante atrás do produto no topo.
   productCategories: [
     { id: "moments", label: "Moments Paris" },
-    { id: "fios", label: "Fios Hidratados" },
+    { id: "vogens", label: "Vogens Profissional" },
   ],
   products: [
     {
-      id: "moments-mask",
-      name: "Moments Mask",
-      type: "Máscara hidratante",
+      id: "best-girl-moments",
+      name: "Best Girl Moments",
+      tagline: "Hidratação & perfume em cada toque",
+      type: "Hidratante corporal · 200 g",
       brand: "Moments Paris",
       category: "moments",
-      image: "Assets/Produtos/ilustracoes/moments-mask.svg",
-      description: "Máscara hidratante da linha Moments Paris. Peça com a consultora e consulte valor e disponibilidade.",
+      volume: "200g",
+      image: "Assets/Produtos/best-girl-moments.png",
+      description: "Hidratante corporal perfumado Best Girl da Moments Paris (200 g). Peça com a consultora e consulte valor e disponibilidade pelo WhatsApp.",
       watermark: "MOMENTS",
-      colors: ["#d9b46a", "#120d06", "#f6e2b3"],
-      price: "R$ 89,90", // FICTÍCIO
+      colors: ["#e0b054", "#1b1409", "#f8dfa6"],
+      price: "R$ 79,90", // FICTÍCIO
+      oldPrice: "R$ 99,90", // FICTÍCIO
       published: true,
     },
     {
-      id: "moments-condicionador",
-      name: "Condicionador Moments",
-      type: "Condicionador",
+      id: "cabelo-pele-unhas",
+      name: "Cabelo, Pele & Unhas",
+      tagline: "Rico em biotina e antioxidantes",
+      type: "Suplemento · 30 cápsulas",
       brand: "Moments Paris",
       category: "moments",
-      image: "Assets/Produtos/ilustracoes/moments-condicionador.svg",
-      description: "Condicionador da linha Moments Paris. Consulte valor, versões e disponibilidade pelo WhatsApp.",
+      volume: "30 cáps",
+      image: "Assets/Produtos/cabelo-pele-unhas.png",
+      description: "Suplemento alimentar Moments Paris rico em biotina e antioxidantes (30 cápsulas · 720 mg). Zero açúcares e sem glúten. Consulte valor e disponibilidade.",
       watermark: "PARIS",
-      colors: ["#2bb8a3", "#04110f", "#a8f0e2"],
-      price: "R$ 69,90", // FICTÍCIO
+      colors: ["#b94be0", "#220a30", "#f2b8ff"],
+      price: "R$ 89,90", // FICTÍCIO
+      oldPrice: "R$ 119,90", // FICTÍCIO
       published: true,
     },
     {
-      id: "fios-condicionador",
-      name: "Fios Hidratados nº 2",
-      type: "Condicionador · 2,5 L",
-      brand: "Fios Hidratados",
-      category: "fios",
-      image: "Assets/Produtos/ilustracoes/fios-condicionador.svg",
-      description: "Condicionador Fios Hidratados em embalagem de 2,5 L. Consulte valor e disponibilidade.",
-      watermark: "FIOS",
-      colors: ["#e8c79a", "#140e08", "#fff1da"],
-      price: "R$ 129,90", // FICTÍCIO
+      id: "honey-mask",
+      name: "Honey Mask 3D",
+      tagline: "Nutrição 3D e brilho de diamante",
+      type: "Máscara biotecnológica · 500 g",
+      brand: "Vogens Profissional",
+      category: "vogens",
+      volume: "500g",
+      image: "Assets/Produtos/honey-mask.png",
+      description: "Máscara capilar biotecnológica com ação queratina, brilho de diamante e D-Pantenol (500 g). Uso profissional para cabelos mais fortes.",
+      watermark: "HONEY",
+      colors: ["#f0a830", "#291804", "#ffe09e"],
+      price: "R$ 99,90", // FICTÍCIO
+      oldPrice: "R$ 129,90", // FICTÍCIO
+      published: true,
+    },
+    {
+      id: "kit-honey-guard",
+      name: "Kit Guard & Honey",
+      tagline: "Tratamento capilar completo no salão",
+      type: "Linha profissional · Kit 4 itens",
+      brand: "Vogens Profissional",
+      category: "vogens",
+      volume: "Kit",
+      image: "Assets/Produtos/kit-honey-guard.png",
+      description: "Linha profissional Vogens com Honey Mask (500 g) e tratamento capilar Guard (Shampoo 1000 ml + Condicionador + Leave-in 240 ml). Consulte disponibilidade.",
+      watermark: "GUARD",
+      colors: ["#9c4dcc", "#190c26", "#e4bfff"],
+      price: "R$ 249,90", // FICTÍCIO
+      oldPrice: "R$ 299,90", // FICTÍCIO
       published: true,
     },
     {
       id: "fios-shampoo",
-      name: "Shampoo Fios Hidratados",
-      type: "Shampoo",
-      brand: null, // marca a confirmar
-      category: "fios",
-      image: "Assets/Produtos/ilustracoes/fios-shampoo.svg",
-      description: "Shampoo da linha Fios Hidratados. Consulte valor e disponibilidade pelo WhatsApp.",
-      watermark: "DIVA",
-      colors: ["#ff4f9a", "#14040b", "#ffc2dc"],
-      price: "R$ 59,90", // FICTÍCIO
+      name: "Fios Hidratados nº 1",
+      tagline: "Hidratação profunda e controle do frizz",
+      type: "Shampoo hidratante · 2,5 L",
+      brand: "Vogens Profissional",
+      category: "vogens",
+      volume: "2,5L",
+      image: "Assets/Produtos/fios-hidratados-shampoo.png",
+      description: "Shampoo Hidratante Fios Hidratados Passo 1 (2,5 L) — pH balanceado, sem parabenos e brilho intenso. Consulte valor e disponibilidade pelo WhatsApp.",
+      watermark: "FIOS",
+      colors: ["#d4942a", "#1f1405", "#ffd98a"],
+      price: "R$ 129,90", // FICTÍCIO
+      oldPrice: "R$ 159,90", // FICTÍCIO
       published: true,
     },
   ],

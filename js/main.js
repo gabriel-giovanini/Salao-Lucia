@@ -209,7 +209,7 @@
     setPeriod(selectedPeriod === p ? "" : p, b);
   });
 
-  /* ---------------- Hero: vitrine de produtos ---------------- */
+  /* ---------------- Hero: vitrine de produtos (coreografia orbital 3D do vídeo) ---------------- */
   var products = (C.products || []).filter(function (p) { return p.published; });
 
   // Permite transição suave das cores do hero só com CSS
@@ -217,7 +217,7 @@
     ["--p-glow", "--p-bg", "--p-acc"].forEach(function (n) {
       CSS.registerProperty({ name: n, syntax: "<color>", inherits: true, initialValue: "#000000" });
     });
-    $("[data-hero]").style.transition = "--p-glow 1.4s " + EASE + ", --p-bg 1.4s " + EASE + ", --p-acc 1.4s " + EASE;
+    $("[data-hero]").style.transition = "--p-glow 1.2s " + EASE + ", --p-bg 1.2s " + EASE + ", --p-acc 1.2s " + EASE;
   } catch (e) { /* navegador sem suporte: troca direta */ }
 
   var heroApi = null;
@@ -228,18 +228,23 @@
     var busy = false;
     var titleEl = $("[data-hero-title]");
     var kickerEl = $("[data-hero-kicker]");
+    var descEl = $("[data-hero-desc]");
+    var taglineEl = $("[data-hero-tagline]");
     var priceEl = $("[data-hero-price]");
+    var oldPriceEl = $("[data-hero-old-price]");
     var buyEl = $("[data-hero-buy]");
-    var floatEl = $(".stage-float", hero);
     var wm = $("[data-watermark]");
     var picks = $("[data-hero-picks]");
-    var thumbBtn = $("[data-hero-next-thumb]");
     var stage = $("[data-stage]");
+    var shadowEl = $("[data-stage-shadow]");
+    var orbitCur = $("[data-orbit-cur]");
+    var orbitPrev = $("[data-orbit-prev]");
+    var orbitNext = $("[data-orbit-next]");
     var two = function (n) { return String(n).padStart(2, "0"); };
     $$("[data-hero-total]").forEach(function (el) { el.textContent = two(products.length); });
 
     picks.innerHTML = products.map(function (p, i) {
-      return '<button type="button" class="prod-pick" aria-pressed="' + (i === 0) + '" aria-label="' + esc(p.name) + '"><img src="' + media(p.image) + '" alt="" /></button>';
+      return '<button type="button" class="prod-pick" aria-pressed="' + (i === 0) + '" aria-label="' + esc(p.name) + '" title="' + esc(p.name) + '"><img src="' + media(p.image) + '" alt="" /></button>';
     }).join("");
     guardAll(picks);
     $$(".prod-pick", picks).forEach(function (b, i) { b.addEventListener("click", function () { go(i); }); });
@@ -249,80 +254,195 @@
       hero.style.setProperty("--p-bg", p.colors[1]);
       hero.style.setProperty("--p-acc", p.colors[2]);
     }
+
+    function syncOrbitImages(i) {
+      var n = products.length;
+      var curP = products[i];
+      var prevP = products[(i - 1 + n) % n];
+      var nextP = products[(i + 1) % n];
+      var curImg = $("img", orbitCur);
+      var prevImg = $("img", orbitPrev);
+      var nextImg = $("img", orbitNext);
+      if (curImg) { curImg.src = media(curP.image); curImg.alt = curP.name; }
+      if (prevImg) { prevImg.src = media(prevP.image); prevImg.alt = ""; }
+      if (nextImg) { nextImg.src = media(nextP.image); nextImg.alt = ""; }
+      if (orbitPrev) orbitPrev.setAttribute("aria-label", "Ver produto anterior: " + prevP.name);
+      if (orbitNext) orbitNext.setAttribute("aria-label", "Ver próximo produto: " + nextP.name);
+      guardAll(hero);
+    }
+
     function setContent(p, i) {
-      kickerEl.textContent = p.brand || "Fios Hidratados";
+      var brandTxt = p.brand || "Moments Paris";
+      kickerEl.textContent = p.type ? brandTxt + " · " + p.type : brandTxt;
       titleEl.textContent = p.name;
       splitEl(titleEl);
       titleEl.classList.add("in");
+      if (descEl) descEl.textContent = p.description || "";
+      if (taglineEl) taglineEl.textContent = p.tagline || "Beleza e cuidado em cada detalhe";
       priceEl.textContent = p.price || "Sob consulta";
+      if (oldPriceEl) {
+        oldPriceEl.textContent = p.oldPrice || "";
+        oldPriceEl.hidden = !p.oldPrice;
+      }
       buyEl.href = productWa(p);
       $$(".prod-pick", picks).forEach(function (b, j) { b.setAttribute("aria-pressed", String(j === i)); });
-      var next = products[(i + 1) % products.length];
-      var tImg = $("img", thumbBtn);
-      if (tImg) tImg.src = media(next.image);
-      var nn = $("[data-next-name]");
-      if (nn) nn.textContent = next.name;
       $$("[data-hero-cur]").forEach(function (el) { el.textContent = two(i + 1); });
     }
+
     function charsIn(delay) {
       $$(".split-char", titleEl).forEach(function (c, k) {
-        anim(c, [{ transform: "translateY(100%)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 800, delay: (delay || 0) + k * 22 });
+        anim(c, [{ transform: "translateY(100%)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 750, delay: (delay || 0) + k * 20 });
       });
     }
 
-    // Troca de produto: anima só durante a transição (nada fica rodando depois)
+    // Posições orbitais responsivas (idênticas ao CSS para interpolar com fluidez no Web Animations API)
+    function orbitCoords() {
+      var mob = window.innerWidth < 1024;
+      return {
+        cur:  { t: "translate3d(0vw, 0vh, 0) scale(1) rotate(0deg)", o: 1, f: "blur(0px) brightness(1)" },
+        prev: mob
+          ? { t: "translate3d(-34vw, -22vh, 0) scale(0.36) rotate(-8deg)", o: 0.4, f: "blur(1.2px) brightness(0.88)" }
+          : { t: "translate3d(-22vw, -46vh, 0) scale(0.45) rotate(-8deg)", o: 0.55, f: "blur(1.2px) brightness(0.88)" },
+        next: mob
+          ? { t: "translate3d(36vw, -18vh, 0) scale(0.34) rotate(6deg)", o: 0.95, f: "blur(0px) brightness(1)" }
+          : { t: "translate3d(40vw, 33vh, 0) scale(0.26) rotate(4deg)", o: 0.96, f: "blur(0px) brightness(1)" },
+        outTop: { t: "translate3d(-30vw, -75vh, 0) scale(0.22) rotate(-18deg)", o: 0, f: "blur(4px) brightness(0.7)" },
+        outBot: { t: "translate3d(55vw, 58vh, 0) scale(0.14) rotate(14deg)", o: 0, f: "blur(3px) brightness(0.8)" },
+      };
+    }
+
+    // Troca de produto com voo 3D igual ao vídeo (Atual -> Topo Esquerdo | Próximo -> Centro | Novo -> Canto Inferior Direito)
     function go(next, dir) {
+      var n = products.length;
+      next = ((next % n) + n) % n;
       if (busy || next === idx) return;
-      dir = dir || (next > idx ? 1 : -1);
+      if (!dir) {
+        var diff = (next - idx + n) % n;
+        dir = diff <= n / 2 ? 1 : -1;
+      }
       busy = true;
       var p = products[next];
-      var oldItem = $("[data-stage-item]", floatEl);
-      var newItem = document.createElement("div");
-      newItem.className = "stage-item";
-      newItem.setAttribute("data-stage-item", "");
-      newItem.innerHTML = '<img src="' + media(p.image) + '" alt="' + esc(p.name) + '" />';
-      guardAll(newItem);
-      floatEl.appendChild(newItem);
+      var pos = orbitCoords();
+      var dur = 920;
+      var flyEase = "cubic-bezier(0.22, 1, 0.36, 1)";
+
       applyColors(p);
 
-      anim(oldItem, [{ transform: "none", opacity: 1 }, { transform: "translateX(" + (-50 * dir) + "%) rotate(" + (-30 * dir) + "deg) scale(.5)", opacity: 0 }], { duration: 600, easing: "cubic-bezier(0.7, 0, 0.84, 0)", fill: "forwards" })
-        .finished.then(function () { oldItem.remove(); });
-      anim(newItem, [{ transform: "translateX(" + (60 * dir) + "%) rotate(" + (20 * dir) + "deg) scale(.6)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 1000, delay: 150 })
-        .finished.then(function () { busy = false; });
+      // Se o usuário pulou diretamente para um item que não era o adjacente, pré-atualiza a imagem do slot que vai voar para o centro
+      if (dir > 0 && next !== (idx + 1) % n && orbitNext) {
+        var ni = $("img", orbitNext);
+        if (ni) ni.src = media(p.image);
+      } else if (dir < 0 && next !== (idx - 1 + n) % n && orbitPrev) {
+        var pi = $("img", orbitPrev);
+        if (pi) pi.src = media(p.image);
+      }
 
-      var wmOut = anim(wm, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: "ease-in", fill: "forwards" });
+      if (shadowEl) {
+        anim(shadowEl, [
+          { transform: "scaleX(1)", opacity: 0.9 },
+          { transform: "scaleX(0.45)", opacity: 0.25 },
+          { transform: "scaleX(1)", opacity: 0.9 },
+        ], { duration: dur, easing: flyEase });
+      }
+
+      var a1, a2, a3;
+      if (dir > 0) {
+        // Avançando (como no vídeo): Centro voa p/ Topo-Esquerdo; Canto-Inferior-Direito voa p/ Centro; Topo-Esquerdo sai por cima e entra novo no Canto
+        a1 = anim(orbitCur, [
+          { transform: pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
+          { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
+        ], { duration: dur, easing: flyEase, fill: "forwards" });
+
+        a2 = anim(orbitNext, [
+          { transform: pos.next.t, opacity: pos.next.o },
+          { transform: pos.cur.t, opacity: pos.cur.o },
+        ], { duration: dur, easing: flyEase, fill: "forwards" });
+
+        a3 = anim(orbitPrev, [
+          { transform: pos.prev.t, opacity: pos.prev.o },
+          { transform: pos.outTop.t, opacity: 0 },
+        ], { duration: 380, easing: "ease-in", fill: "forwards" });
+
+        setTimeout(function () {
+          var newNextP = products[(next + 1) % n];
+          var prevImg = $("img", orbitPrev);
+          if (prevImg) prevImg.src = media(newNextP.image);
+          a3.cancel();
+          a3 = anim(orbitPrev, [
+            { transform: pos.outBot.t, opacity: 0, filter: "blur(0px) brightness(1)" },
+            { transform: pos.next.t, opacity: pos.next.o, filter: "blur(0px) brightness(1)" },
+          ], { duration: 540, easing: EASE, fill: "forwards" });
+        }, 380);
+      } else {
+        // Voltando: Topo-Esquerdo desce p/ Centro; Centro desce p/ Canto-Inferior-Direito; Canto sai e novo entra no Topo-Esquerdo
+        a1 = anim(orbitCur, [
+          { transform: pos.cur.t, opacity: pos.cur.o },
+          { transform: pos.next.t, opacity: pos.next.o },
+        ], { duration: dur, easing: flyEase, fill: "forwards" });
+
+        a2 = anim(orbitPrev, [
+          { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
+          { transform: pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
+        ], { duration: dur, easing: flyEase, fill: "forwards" });
+
+        a3 = anim(orbitNext, [
+          { transform: pos.next.t, opacity: pos.next.o },
+          { transform: pos.outBot.t, opacity: 0 },
+        ], { duration: 380, easing: "ease-in", fill: "forwards" });
+
+        setTimeout(function () {
+          var newPrevP = products[(next - 1 + n) % n];
+          var nextImg = $("img", orbitNext);
+          if (nextImg) nextImg.src = media(newPrevP.image);
+          a3.cancel();
+          a3 = anim(orbitNext, [
+            { transform: pos.outTop.t, opacity: 0, filter: pos.prev.f },
+            { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
+          ], { duration: 540, easing: EASE, fill: "forwards" });
+        }, 380);
+      }
+
+      Promise.all([a1.finished, a2.finished]).then(function () {
+        idx = next;
+        syncOrbitImages(idx);
+        [a1, a2, a3].forEach(function (a) { if (a && a.cancel) a.cancel(); });
+        busy = false;
+      });
+
+      var wmOut = anim(wm, [{ opacity: 1 }, { opacity: 0 }], { duration: 280, easing: "ease-in", fill: "forwards" });
       wmOut.finished.then(function () {
         wm.textContent = p.watermark || "";
-        anim(wm, [{ transform: "scale(1.15)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 900 });
+        anim(wm, [{ transform: "scale(1.12)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 850 });
         wmOut.cancel();
       });
 
-      var parts = [kickerEl, titleEl, priceEl];
+      var parts = [kickerEl, titleEl, descEl, priceEl, oldPriceEl, taglineEl].filter(Boolean);
       var outAnims = parts.map(function (el, k) {
-        return anim(el, [{ transform: "none", opacity: 1 }, { transform: "translateY(-14px)", opacity: 0 }], { duration: 300, delay: k * 30, easing: "ease-in", fill: "forwards" });
+        return anim(el, [{ transform: "none", opacity: 1 }, { transform: "translateY(-12px)", opacity: 0 }], { duration: 260, delay: k * 20, easing: "ease-in", fill: "forwards" });
       });
       setTimeout(function () {
         setContent(p, next);
-        outAnims.forEach(function (a) { a.cancel && a.cancel(); });
+        outAnims.forEach(function (a) { if (a && a.cancel) a.cancel(); });
         charsIn(0);
-        [kickerEl, priceEl].forEach(function (el, k) {
-          anim(el, [{ transform: "translateY(20px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 800, delay: 80 + k * 120 });
+        [kickerEl, descEl, priceEl, oldPriceEl, taglineEl].filter(Boolean).forEach(function (el, k) {
+          anim(el, [{ transform: "translateY(18px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 750, delay: 60 + k * 70 });
         });
-      }, 360);
-      idx = next;
+      }, 300);
     }
+
     function nextSlide() { go((idx + 1) % products.length, 1); }
     function prevSlide() { go((idx - 1 + products.length) % products.length, -1); }
 
     $$("[data-hero-next]").forEach(function (b) { b.addEventListener("click", nextSlide); });
     $$("[data-hero-prev]").forEach(function (b) { b.addEventListener("click", prevSlide); });
-    thumbBtn.addEventListener("click", nextSlide);
+    if (orbitNext) orbitNext.addEventListener("click", nextSlide);
+    if (orbitPrev) orbitPrev.addEventListener("click", prevSlide);
     hero.addEventListener("keydown", function (e) {
       if (e.key === "ArrowRight") nextSlide();
       if (e.key === "ArrowLeft") prevSlide();
     });
 
-    // swipe no celular
+    // Swipe no palco central
     var sx = null;
     stage.addEventListener("pointerdown", function (e) { sx = e.clientX; });
     stage.addEventListener("pointerup", function (e) {
@@ -333,26 +453,27 @@
     });
 
     var first = products[0];
-    var firstImg = $("[data-stage-item] img", floatEl);
-    firstImg.src = media(first.image);
-    firstImg.alt = first.name;
     wm.textContent = first.watermark || "";
     applyColors(first);
+    syncOrbitImages(0);
     setContent(first, 0);
     titleEl.classList.remove("in");
     guardAll(hero);
 
     heroApi = {
       intro: function () {
+        var pos = orbitCoords();
         titleEl.classList.add("in");
-        anim(stage, [{ transform: "translateY(40px) scale(.8)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 1400 });
-        anim(wm, [{ opacity: 0 }, { opacity: 1 }], { duration: 1600 });
-        charsIn(200);
-        [kickerEl, priceEl, buyEl].concat($$("[data-hero-left] .icon-btn, [data-hero-left] .counter-num")).forEach(function (el, k) {
-          anim(el, [{ transform: "translateY(24px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 1000, delay: 250 + k * 80 });
+        anim(orbitCur, [{ transform: "translate3d(0vw, 12vh, 0) scale(0.75)", opacity: 0 }, { transform: pos.cur.t, opacity: 1 }], { duration: 1350 });
+        anim(orbitPrev, [{ transform: pos.outTop.t, opacity: 0 }, { transform: pos.prev.t, opacity: pos.prev.o }], { duration: 1400, delay: 180 });
+        anim(orbitNext, [{ transform: pos.outBot.t, opacity: 0 }, { transform: pos.next.t, opacity: pos.next.o }], { duration: 1400, delay: 260 });
+        anim(wm, [{ opacity: 0 }, { opacity: 1 }], { duration: 1500 });
+        charsIn(180);
+        [kickerEl, descEl, buyEl, priceEl, oldPriceEl, taglineEl].filter(Boolean).concat($$("[data-hero-left] .hero-arrow-btn, [data-hero-left] .counter-num")).forEach(function (el, k) {
+          anim(el, [{ transform: "translateY(22px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 950, delay: 220 + k * 65 });
         });
-        $$(".prod-pick", picks).concat([thumbBtn]).forEach(function (el, k) {
-          anim(el, [{ transform: "scale(.6)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 900, delay: 500 + k * 70, easing: SPRING });
+        $$(".prod-pick", picks).forEach(function (el, k) {
+          anim(el, [{ transform: "scale(.5)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 850, delay: 450 + k * 65, easing: SPRING });
         });
       },
     };
@@ -453,14 +574,17 @@
   function initProducts() {
     var track = $("[data-ptrack]");
     if (!track) return;
-    var glows = { moments: "#ff4f9a", fios: "#e8c79a" };
+    var glows = { moments: "#e0b054", vogens: "#f0a830", fios: "#e8c79a" };
     track.innerHTML = products.map(function (p, k) {
-      return '<article class="pop-card rv" data-anim="up" style="--d:' + (k * 0.1) + "s;--glow:" + esc(p.colors[0] || glows[p.category]) + '" role="listitem" data-cat="' + esc(p.category) + '">' +
+      return '<article class="pop-card rv" data-anim="up" style="--d:' + (k * 0.1) + "s;--glow:" + esc(p.colors[0] || glows[p.category] || "#e0b054") + '" role="listitem" data-cat="' + esc(p.category) + '">' +
         '<div class="pop-img"><img src="' + media(p.image) + '" alt="' + esc(p.name) + '" loading="lazy" /></div>' +
-        '<p class="brand-tag">' + esc(p.brand || "Fios Hidratados") + "</p>" +
-        '<h4 class="font-display mt-2 text-3xl leading-tight">' + esc(p.name) + "</h4>" +
-        '<p class="font-display mt-3 text-3xl font-semibold text-[var(--blush)]">' + esc(p.price || "Sob consulta") + "</p>" +
-        '<div class="pop-action mt-5"><a class="btn btn-pink !min-h-[44px] !px-4 !py-2 text-sm" href="' + esc(productWa(p)) + '" target="_blank" rel="noopener">Pedir pelo WhatsApp <i data-lucide="arrow-up-right" class="arrow h-4 w-4" aria-hidden="true"></i></a></div>' +
+        '<p class="brand-tag">' + esc(p.brand || "Moments Paris") + "</p>" +
+        '<h4 class="font-display mt-2 text-2xl font-semibold leading-tight">' + esc(p.name) + "</h4>" +
+        '<div class="mt-3 flex items-baseline gap-2.5">' +
+          '<p class="font-display text-2xl font-bold text-white">' + esc(p.price || "Sob consulta") + "</p>" +
+          (p.oldPrice ? '<p class="font-display text-sm text-white/45 line-through">' + esc(p.oldPrice) + "</p>" : "") +
+        "</div>" +
+        '<div class="pop-action mt-5"><a class="btn btn-primary !min-h-[44px] !px-4 !py-2 text-sm" href="' + esc(productWa(p)) + '" target="_blank" rel="noopener">Pedir pelo WhatsApp <i data-lucide="arrow-up-right" class="arrow h-4 w-4" aria-hidden="true"></i></a></div>' +
         "</article>";
     }).join("");
     guardAll(track);
@@ -480,11 +604,11 @@
     return '<article class="pop-card rv" data-anim="up" style="--d:' + (k * 0.1) + 's" role="listitem" data-cat="' + esc(s.category) + '">' +
       '<div class="pop-img"><img src="' + media(s.image) + '" alt="" loading="lazy" /></div>' +
       '<div class="flex flex-wrap gap-2">' + meta.join("") + "</div>" +
-      '<h3 class="font-display mt-4 text-3xl">' + esc(s.name) + "</h3>" +
+      '<h3 class="font-display mt-4 text-2xl font-semibold">' + esc(s.name) + "</h3>" +
       '<p class="mt-2 text-sm leading-relaxed text-white/70">' + esc(s.description) + "</p>" +
-      (s.price ? '<p class="font-display mt-4 text-2xl text-[var(--blush)]">' + esc(s.price) + "</p>" : '<p class="mt-4 text-xs text-white/50">Valor informado pela equipe.</p>') +
+      (s.price ? '<p class="font-display mt-4 text-2xl font-bold text-white">' + esc(s.price) + "</p>" : '<p class="mt-4 text-xs text-white/50">Valor informado pela equipe.</p>') +
       '<div class="pop-action mt-5 flex flex-wrap gap-2">' +
-        '<button type="button" class="btn btn-pink !min-h-[44px] !px-4 !py-2 text-sm" data-open-drawer data-service="' + esc(s.name) + '">Solicitar horário</button>' +
+        '<button type="button" class="btn btn-primary !min-h-[44px] !px-4 !py-2 text-sm" data-open-drawer data-service="' + esc(s.name) + '">Solicitar horário</button>' +
         '<a class="btn btn-ghost !min-h-[44px] !px-4 !py-2 text-sm" href="' + esc(S.waUrl(C.contact.whatsappNumber, serviceMessage(s))) + '" target="_blank" rel="noopener">Tirar dúvida</a>' +
       "</div></article>";
   }
@@ -492,7 +616,7 @@
     return '<article class="pop-card rv" data-anim="up" style="--d:' + (k * 0.12) + "s;--glow:" + o.glow + '" role="listitem">' +
       '<div class="pop-img"><img src="' + media(o.art) + '" alt="" loading="lazy" /></div>' +
       '<p class="eyebrow">' + esc(o.step) + "</p>" +
-      '<h3 class="font-display mt-3 text-3xl">' + esc(o.title) + "</h3>" +
+      '<h3 class="font-display mt-3 text-2xl font-semibold">' + esc(o.title) + "</h3>" +
       '<p class="mt-2 text-sm leading-relaxed text-white/70">' + esc(o.text) + "</p>" +
       '<div class="pop-action mt-5">' + o.action + "</div></article>";
   }
@@ -501,11 +625,11 @@
     if (!track) return;
     if (!published.length) {
       track.innerHTML = [
-        { step: "Passo 1", title: "Conte o que você procura", text: "Descreva o serviço que deseja e a equipe responde com as opções disponíveis.", art: "petala", glow: "#ff4f9a",
-          action: '<button type="button" class="btn btn-pink !min-h-[44px] !px-4 !py-2 text-sm" data-open-drawer>Solicitar horário</button>' },
+        { step: "Passo 1", title: "Conte o que você procura", text: "Descreva o serviço que deseja e a equipe responde com as opções disponíveis.", art: "petala", glow: "#e0b054",
+          action: '<button type="button" class="btn btn-primary !min-h-[44px] !px-4 !py-2 text-sm" data-open-drawer>Solicitar horário</button>' },
         { step: "Passo 2", title: "Consulte valores e duração", text: "Valores e tempo de cada atendimento são informados diretamente pela equipe.", art: "seda", glow: "#e8c79a",
           action: '<a class="btn btn-ghost !min-h-[44px] !px-4 !py-2 text-sm" href="' + esc(waDefault) + '" target="_blank" rel="noopener">Perguntar no WhatsApp</a>' },
-        { step: "Passo 3", title: "Combine o melhor horário", text: "Indique dia e período de preferência. A confirmação vem da equipe pelo WhatsApp.", art: "espelho", glow: "#ffc2dc",
+        { step: "Passo 3", title: "Combine o melhor horário", text: "Indique dia e período de preferência. A confirmação vem da equipe pelo WhatsApp.", art: "espelho", glow: "#b94be0",
           action: '<button type="button" class="btn btn-ghost !min-h-[44px] !px-4 !py-2 text-sm" data-open-drawer>Escolher período</button>' },
         { step: "No dia", title: "Venha brilhar", text: "Um espaço onde todas as pessoas são bem-vindas, na Vila Aeroporto, em Campinas.", art: "joia", glow: "#ffffff",
           action: '<a class="btn btn-ghost !min-h-[44px] !px-4 !py-2 text-sm" href="' + esc(mapsLink) + '" target="_blank" rel="noopener">Como chegar</a>' },
@@ -904,7 +1028,7 @@
     if (hasST) {
       gsap.registerPlugin(window.ScrollTrigger);
       // hero se afasta ao rolar
-      gsap.to("[data-stage]", { yPercent: 25, scale: 0.85, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
+      gsap.to("[data-hero-orbit]", { yPercent: 18, scale: 0.9, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
       gsap.to("[data-hero-left], [data-hero-right]", { y: -80, opacity: 0.2, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
       var cine = $("[data-cine]");
       if (cine) gsap.fromTo(cine, { scale: 0.84, borderRadius: "80px" }, { scale: 1, borderRadius: "40px", ease: "none", scrollTrigger: { trigger: cine, start: "top bottom", end: "top 20%", scrub: 1 } });

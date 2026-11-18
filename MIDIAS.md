@@ -2,20 +2,19 @@
 
 Todos os caminhos ficam em `js/config.js` (`products[].image` e `media`). Para trocar uma mídia, coloque o arquivo em `Assets/` e altere o caminho; não é preciso mexer nas seções.
 
-## Produtos — ilustrações provisórias (em uso)
+## Produtos — fotos recortadas em alta resolução (em uso)
 
-As fotos enviadas tinham baixa resolução (225–300 px). A pedido do cliente, foram trocadas por
-**ilustrações vetoriais fictícias** (SVG, nítidas em qualquer tamanho), criadas para o projeto:
+As 5 embalagens recortadas sem fundo (PNG transparente) enviadas pelo cliente estão em uso no palco 3D do topo e na vitrine:
 
-| Arquivo | Produto |
-|---|---|
-| `Assets/Produtos/ilustracoes/moments-mask.svg` | Moments Mask (topo, vitrine, bento) |
-| `Assets/Produtos/ilustracoes/moments-condicionador.svg` | Condicionador Moments |
-| `Assets/Produtos/ilustracoes/fios-condicionador.svg` | Fios Hidratados nº 2 |
-| `Assets/Produtos/ilustracoes/fios-shampoo.svg` | Shampoo Fios Hidratados |
+| Arquivo | Produto | Marca |
+|---|---|---|
+| `Assets/Produtos/best-girl-moments.png` | Best Girl Moments (200 g) | Moments Paris |
+| `Assets/Produtos/cabelo-pele-unhas.png` | Cabelo, Pele & Unhas (30 cápsulas) | Moments Paris |
+| `Assets/Produtos/honey-mask.png` | Honey Mask 3D (500 g) | Vogens Profissional |
+| `Assets/Produtos/kit-honey-guard.png` | Kit Guard & Honey (4 itens) | Vogens Profissional |
+| `Assets/Produtos/fios-hidratados-shampoo.png` | Fios Hidratados nº 1 (Shampoo · 2,5 L) | Vogens Profissional |
 
-São representações ilustrativas, não fotos reais das embalagens. Para usar fotos reais, coloque PNGs
-sem fundo com 800 px ou mais em `Assets/Produtos/` e troque `products[].image` em `js/config.js`.
+As ilustrações vetoriais anteriores em `Assets/Produtos/ilustracoes/*.svg` foram mantidas na pasta como reserva.
 
 ## Enviadas pelo cliente
 

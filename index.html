@@ -44,7 +44,7 @@
   <script>document.documentElement.classList.remove("no-js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -84,7 +84,7 @@
         <button type="button" class="btn btn-primary hidden sm:inline-flex" data-open-drawer data-magnetic>
           <i data-lucide="calendar-heart" class="h-4 w-4" aria-hidden="true"></i> Agendar
         </button>
-        <button type="button" class="icon-btn pink sm:hidden" data-open-drawer aria-label="Abrir solicitação de agendamento">
+        <button type="button" class="icon-btn sm:hidden" data-open-drawer aria-label="Abrir solicitação de agendamento">
           <i data-lucide="calendar-heart" class="h-5 w-5" aria-hidden="true"></i>
         </button>
         <button type="button" class="icon-btn lg:hidden" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menu">
@@ -106,51 +106,85 @@
   </header>
 
   <main id="conteudo">
-    <!-- ===================== 1. HERO — VITRINE DE PRODUTOS (minimalista) ===================== -->
+    <!-- ===================== 1. HERO — VITRINE DE PRODUTOS (choreografia do vídeo) ===================== -->
     <section id="inicio" class="hero" data-hero aria-roledescription="carrossel" aria-label="Produtos em destaque">
       <div class="hero-spot" aria-hidden="true"></div>
       <div class="watermark" data-watermark aria-hidden="true">MOMENTS</div>
 
-      <div class="relative z-[2] mx-auto grid min-h-[100svh] max-w-7xl grid-cols-1 content-center items-center gap-4 px-5 pb-16 pt-24 md:px-8 lg:grid-cols-[1fr_auto_1fr] lg:gap-6 lg:pb-20">
-        <!-- Esquerda: nome, preço, ação -->
-        <div class="order-2 text-center lg:order-1 lg:text-left" data-hero-left>
-          <div class="mb-6 hidden items-center gap-3 lg:flex">
-            <button type="button" class="icon-btn pink" data-hero-prev aria-label="Produto anterior"><i data-lucide="chevron-left" class="h-5 w-5" aria-hidden="true"></i></button>
-            <button type="button" class="icon-btn pink" data-hero-next aria-label="Próximo produto"><i data-lucide="chevron-right" class="h-5 w-5" aria-hidden="true"></i></button>
-            <p class="counter-num ml-2 text-sm"><span class="cur" data-hero-cur>01</span> <span class="text-white/40">/ <span data-hero-total>04</span></span></p>
+      <!-- Camada 3D de voo dos produtos (Anterior no topo · Atual no centro · Próximo no canto) -->
+      <div class="hero-orbit" data-hero-orbit>
+        <button type="button" class="orbit-node" data-orbit-prev data-pos="prev" aria-label="Ver produto anterior">
+          <img src="Assets/Produtos/fios-hidratados-shampoo.png" alt="" width="500" height="500" />
+        </button>
+        <div class="orbit-node" data-orbit-cur data-pos="current">
+          <img src="Assets/Produtos/best-girl-moments.png" alt="Best Girl Moments" width="600" height="600" />
+        </div>
+        <button type="button" class="orbit-node" data-orbit-next data-pos="next" aria-label="Ver próximo produto">
+          <img src="Assets/Produtos/cabelo-pele-unhas.png" alt="" width="500" height="500" />
+        </button>
+        <div class="stage-shadow" data-stage-shadow aria-hidden="true"></div>
+      </div>
+
+      <!-- Grade UI sobre o palco -->
+      <div class="hero-grid relative z-[4] mx-auto grid min-h-[100svh] max-w-7xl grid-cols-1 content-between px-5 pb-8 pt-24 md:px-8 lg:grid-cols-[1fr_minmax(300px,440px)_1fr] lg:items-center lg:pb-12">
+        <!-- Esquerda: setas (< >), título editorial, descrição concisa, CTA branco -->
+        <div class="hero-col-left order-2 text-center lg:order-1 lg:text-left" data-hero-left>
+          <div class="mb-5 inline-flex items-center gap-2.5 lg:flex">
+            <button type="button" class="hero-arrow-btn" data-hero-prev aria-label="Produto anterior">
+              <i data-lucide="chevron-left" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="hero-arrow-btn" data-hero-next aria-label="Próximo produto">
+              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+            <span class="counter-num ml-2 text-xs text-white/60"><span class="cur text-white" data-hero-cur>01</span> / <span data-hero-total>05</span></span>
           </div>
-          <p class="eyebrow !text-[var(--blush)]" data-hero-kicker>Moments Paris</p>
-          <h1 class="section-title mt-2 text-[clamp(2.3rem,5vw,4.6rem)]" data-hero-title>Moments Mask</h1>
-          <p class="font-display mt-3 text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-none" data-hero-price>R$ 89,90</p>
-          <a class="btn btn-primary mt-7" data-hero-buy href="#" target="_blank" rel="noopener" data-magnetic>
-            Pedir pelo WhatsApp <i data-lucide="chevron-right" class="arrow h-4 w-4" aria-hidden="true"></i>
-          </a>
+
+          <p class="eyebrow !text-white/75" data-hero-kicker>Moments Paris · Hidratante corporal · 200 g</p>
+          <h1 class="section-title mt-2 text-[clamp(2.35rem,4.6vw,4.1rem)] font-medium leading-[1.04] tracking-[-0.03em]" data-hero-title>Best Girl Moments</h1>
+          <p class="mx-auto mt-3.5 max-w-md text-sm leading-relaxed text-white/75 lg:mx-0 lg:text-[0.94rem]" data-hero-desc>Hidratante corporal perfumado Best Girl da Moments Paris (200 g). Peça com a consultora e consulte valor e disponibilidade pelo WhatsApp.</p>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+            <a class="btn btn-primary" data-hero-buy href="#" target="_blank" rel="noopener" data-magnetic>
+              Pedir pelo WhatsApp <i data-lucide="chevron-right" class="arrow h-4 w-4" aria-hidden="true"></i>
+            </a>
+          </div>
         </div>
 
-        <!-- Centro: palco -->
-        <div class="order-1 relative flex justify-center lg:order-2">
-          <button type="button" class="icon-btn pink absolute left-0 top-1/2 z-[3] -translate-y-1/2 lg:hidden" data-hero-prev aria-label="Produto anterior"><i data-lucide="chevron-left" class="h-5 w-5" aria-hidden="true"></i></button>
-          <div class="stage" data-stage>
-            <div class="stage-float">
-              <div class="stage-item" data-stage-item>
-                <img src="Assets/Produtos/ilustracoes/moments-mask.svg" alt="Moments Mask" width="600" height="600" />
-              </div>
-            </div>
-            <div class="stage-shadow" aria-hidden="true"></div>
-          </div>
-          <button type="button" class="icon-btn pink absolute right-0 top-1/2 z-[3] -translate-y-1/2 lg:hidden" data-hero-next aria-label="Próximo produto"><i data-lucide="chevron-right" class="h-5 w-5" aria-hidden="true"></i></button>
-        </div>
+        <!-- Centro: espaço reservado para o produto 3D em destaque (suporta swipe) -->
+        <div class="hero-stage-spacer order-1 lg:order-2" data-stage aria-hidden="true"></div>
 
-        <!-- Direita: escolher produto -->
-        <div class="order-3 flex justify-center lg:justify-end" data-hero-right>
-          <div class="flex gap-3 lg:flex-col" role="group" aria-label="Escolha o produto" data-hero-picks></div>
+        <!-- Direita: preço em destaque + seletor circular de produtos (estilo 36 · 38 · 40 do vídeo) -->
+        <div class="hero-col-right order-3 flex flex-col items-center lg:items-end lg:text-right" data-hero-right>
+          <div class="hero-price-box" data-hero-price-box>
+            <p class="font-display text-[clamp(2.3rem,4vw,3.5rem)] font-semibold leading-none tracking-tight text-white" data-hero-price>R$ 79,90</p>
+            <p class="font-display mt-1 text-xl text-white/45 line-through decoration-white/60" data-hero-old-price>R$ 99,90</p>
+          </div>
+
+          <p class="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/65">Escolha o produto:</p>
+          <div class="mt-3 flex flex-wrap justify-center gap-2.5 lg:justify-end" role="group" aria-label="Escolha o produto" data-hero-picks></div>
         </div>
       </div>
 
-      <button type="button" class="next-thumb absolute bottom-6 right-8 z-[3] hidden lg:flex" data-hero-next-thumb aria-label="Ver próximo produto">
-        <span class="nt-img"><img src="Assets/Produtos/ilustracoes/moments-condicionador.svg" alt="" /></span>
-        <span class="text-[0.62rem] font-bold uppercase tracking-[0.2em] text-white/60">Próximo · <span data-next-name>Condicionador</span></span>
-      </button>
+      <!-- Rodapé do Hero: ícones rápidos à esquerda + frase de assinatura centralizada embaixo do produto -->
+      <div class="pointer-events-none absolute inset-x-0 bottom-5 z-[4] mx-auto flex max-w-7xl items-end justify-between px-5 md:px-8">
+        <div class="pointer-events-auto hidden items-center gap-2.5 lg:flex">
+          <a class="hero-mini-icon" data-wa-default href="https://wa.me/5519971602364" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <i data-lucide="message-circle" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+          <a class="hero-mini-icon" data-maps-link href="#" target="_blank" rel="noopener" aria-label="Localização no Google Maps">
+            <i data-lucide="map-pin" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+          <a class="hero-mini-icon" data-tel href="tel:+5519971602364" aria-label="Ligar para o Studio">
+            <i data-lucide="phone" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <p class="mx-auto text-center text-base font-medium tracking-[-0.01em] text-white/85 md:text-lg" data-hero-tagline>
+          Hidratação &amp; perfume em cada toque
+        </p>
+
+        <div class="hidden w-[110px] lg:block" aria-hidden="true"></div>
+      </div>
     </section>
 
     <!-- ===================== 2. FAIXAS EM MOVIMENTO ===================== -->
@@ -159,7 +193,7 @@
         <div class="marquee-track font-caps text-[clamp(1.4rem,3.6vw,2.8rem)]" data-marquee-track></div>
       </div>
       <div class="marquee rotate-1 border-y border-white/10 bg-black py-4" data-marquee="2" data-reverse>
-        <div class="marquee-track font-display text-[clamp(1.4rem,3.4vw,2.6rem)] italic" data-marquee-track></div>
+        <div class="marquee-track font-display text-[clamp(1.4rem,3.4vw,2.6rem)]" data-marquee-track></div>
       </div>
     </section>
 
@@ -182,7 +216,7 @@
         <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <p class="eyebrow rv" data-anim="left">Consultora</p>
-            <h2 id="moments-title" class="section-title mt-4 text-[clamp(2.6rem,6.4vw,5.6rem)]" data-split>Seu momento <em class="divo">Moments Paris</em></h2>
+            <h2 id="moments-title" class="section-title mt-4 text-[clamp(2.4rem,5.4vw,4.6rem)]" data-split>Seu momento <em class="divo">Moments Paris</em></h2>
             <p class="muted rv mt-6 max-w-xl text-lg leading-relaxed" data-anim="up">No Studio Lucia Ferraz você é atendida por uma <strong class="text-black">consultora Moments Paris</strong>. Conheça as linhas, tire dúvidas e consulte valores e disponibilidade diretamente pelo WhatsApp.</p>
             <div class="mt-8 flex flex-wrap gap-3">
               <a class="btn btn-dark rv" data-anim="pop" data-moments-wa href="#" target="_blank" rel="noopener" data-magnetic>Quero conhecer os produtos <i data-lucide="arrow-up-right" class="arrow h-4 w-4" aria-hidden="true"></i></a>
@@ -191,7 +225,7 @@
           </div>
           <div class="logo-card rv grid aspect-[4/3] place-items-center p-10" data-anim="scale" data-tilt>
             <img class="w-[78%] max-w-[420px]" src="Assets/Marcas/moments-paris-branco.png" alt="Logotipo Moments Paris" width="536" height="373" data-moments-logo />
-            <span class="chip chip-pink absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap">✦ Consultora Moments Paris</span>
+            <span class="chip absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap">✦ Consultora Moments Paris</span>
           </div>
         </div>
 
@@ -234,12 +268,12 @@
         <div class="relative z-[2] grid h-full min-h-[640px] content-end gap-4 p-5 md:min-h-[680px] md:grid-cols-3 md:p-10">
           <article class="glass rv rounded-[24px] p-6" data-anim="up" data-tilt>
             <img class="bob h-10 w-auto" src="Assets/Marcas/moments-paris-branco.png" alt="" />
-            <h3 class="font-display mt-4 text-3xl">Consultora Moments Paris</h3>
+            <h3 class="font-display mt-4 text-2xl font-semibold">Consultora Moments Paris</h3>
             <p class="mt-2 text-sm leading-relaxed text-white/70">Produtos Moments Paris com atendimento próximo de quem conhece cada linha.</p>
           </article>
           <article class="glass rv rounded-[24px] p-6" data-anim="up" style="--d:.12s" data-tilt>
-            <i data-lucide="sparkles" class="bob h-7 w-7 text-[var(--pink)]" aria-hidden="true"></i>
-            <h3 class="font-display mt-4 text-3xl">Feito por empreendedoras</h3>
+            <i data-lucide="sparkles" class="bob h-7 w-7 text-[var(--champagne)]" aria-hidden="true"></i>
+            <h3 class="font-display mt-4 text-2xl font-semibold">Feito por empreendedoras</h3>
             <p class="mt-2 text-sm leading-relaxed text-white/70">Um negócio de mulheres que empreendem, com cuidado do começo ao fim.</p>
           </article>
           <article class="glass rv rounded-[24px] p-6" data-anim="up" style="--d:.24s" data-rating-block data-tilt>
@@ -303,20 +337,20 @@
           <article class="bento-cell b-wide glass rv min-h-[240px]" data-anim="right">
             <div class="liquid" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="relative flex h-full flex-col justify-end">
-              <p class="eyebrow !text-white">Atendimento por agendamento</p>
-              <p class="font-display mt-2 text-4xl">Cada horário é combinado com você</p>
+              <p class="eyebrow !text-white/80">Atendimento por agendamento</p>
+              <p class="font-display mt-2 text-3xl font-semibold leading-tight">Cada horário é combinado com você</p>
             </div>
           </article>
 
           <article class="bento-cell glass rv min-h-[220px]" data-anim="pop" style="--d:.1s">
-            <i data-lucide="map-pin" class="bob h-8 w-8 text-[var(--pink)]" aria-hidden="true"></i>
-            <p class="font-display mt-6 text-3xl leading-tight">Vila Aeroporto, Campinas</p>
-            <a class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-[var(--blush)] underline-offset-4 hover:underline" data-maps-link href="#" target="_blank" rel="noopener">Como chegar <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
+            <i data-lucide="map-pin" class="bob h-8 w-8 text-[var(--champagne)]" aria-hidden="true"></i>
+            <p class="font-display mt-6 text-2xl font-semibold leading-tight">Vila Aeroporto, Campinas</p>
+            <a class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-white/85 underline-offset-4 hover:underline" data-maps-link href="#" target="_blank" rel="noopener">Como chegar <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
           </article>
 
           <article class="bento-cell glass rv min-h-[220px]" data-anim="pop" style="--d:.2s">
-            <i data-lucide="heart" class="bob h-8 w-8 text-[var(--blush)]" aria-hidden="true"></i>
-            <p class="font-display mt-6 text-3xl leading-tight">Todas as pessoas são bem-vindas</p>
+            <i data-lucide="heart" class="bob h-8 w-8 text-white/85" aria-hidden="true"></i>
+            <p class="font-display mt-6 text-2xl font-semibold leading-tight">Todas as pessoas são bem-vindas</p>
             <p class="mt-2 text-xs text-white/55">Espaço que acolhe a comunidade LGBTQ+.</p>
             <div class="rainbow-line mt-3 w-16" aria-hidden="true"></div>
           </article>
@@ -325,19 +359,19 @@
             <span class="chip bento-tag !border-black/15 !bg-black !text-white">Agende hoje</span>
             <div class="flex h-full flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <p class="eyebrow">Consulta de disponibilidade</p>
-                <p class="font-display mt-3 max-w-md text-4xl leading-tight">Envie seu pedido e a equipe confirma o melhor horário</p>
+                <p class="eyebrow !text-black/60">Consulta de disponibilidade</p>
+                <p class="font-display mt-3 max-w-md text-3xl font-semibold leading-tight">Envie seu pedido e a equipe confirma o melhor horário</p>
               </div>
               <button type="button" class="btn btn-dark shrink-0" data-open-drawer data-magnetic>Solicitar horário <i data-lucide="arrow-right" class="arrow h-4 w-4" aria-hidden="true"></i></button>
             </div>
           </article>
 
           <article class="bento-cell b-wide glass rv relative min-h-[240px]" data-anim="right" style="--d:.1s">
-            <img class="float-slow pointer-events-none absolute -bottom-4 right-2 h-[230px] w-auto" src="Assets/Produtos/ilustracoes/moments-mask.svg" alt="" />
+            <img class="float-slow pointer-events-none absolute -bottom-4 right-2 h-[230px] w-auto object-contain" src="Assets/Produtos/best-girl-moments.png" alt="" />
             <div class="relative max-w-[55%]">
               <p class="eyebrow">Moments Paris</p>
-              <p class="font-display mt-3 text-4xl leading-tight">Peça seus produtos com a consultora</p>
-              <a class="btn btn-pink mt-5" data-moments-wa href="#" target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
+              <p class="font-display mt-3 text-3xl font-semibold leading-tight">Peça seus produtos com a consultora</p>
+              <a class="btn btn-primary mt-5" data-moments-wa href="#" target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
             </div>
           </article>
         </div>
@@ -375,9 +409,9 @@
           <h2 id="agendar-title" class="section-title mt-4 text-[clamp(2.4rem,5.4vw,4.6rem)]" data-split>Solicite seu <em class="divo">horário</em></h2>
           <p class="rv mt-5 max-w-md text-white/70" data-anim="up">Preencha os campos e continue no WhatsApp com a mensagem pronta. A equipe responde com a disponibilidade.</p>
           <ul class="mt-8 grid gap-4 text-sm text-white/75">
-            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.05s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--pink)] font-bold text-white">1</span> Conte seu nome e o que procura.</li>
-            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.15s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white font-bold text-black">2</span> Revise a mensagem e envie pelo WhatsApp.</li>
-            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.25s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/15 font-bold">3</span> A equipe confirma disponibilidade e horário.</li>
+            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.05s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white font-bold text-black">1</span> Conte seu nome e o que procura.</li>
+            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.15s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/25 bg-white/10 font-bold text-white">2</span> Revise a mensagem e envie pelo WhatsApp.</li>
+            <li class="rv flex items-center gap-3" data-anim="left" style="--d:.25s"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 font-bold text-white/80">3</span> A equipe confirma disponibilidade e horário.</li>
           </ul>
         </div>
         <div class="glass rv rounded-[32px] p-6 md:p-8" data-anim="right" data-form-mount="inline"></div>
@@ -387,7 +421,7 @@
 
   <!-- ===================== 7. RODAPÉ ===================== -->
   <footer id="contato" class="relative overflow-hidden border-t border-white/10 pt-24" aria-labelledby="contato-title">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-[520px]" aria-hidden="true" style="background: radial-gradient(50% 60% at 50% 0%, rgba(255,79,154,.25), transparent 70%);"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-[520px]" aria-hidden="true" style="background: radial-gradient(50% 60% at 50% 0%, rgba(255,255,255,.09), transparent 70%);"></div>
     <div class="relative mx-auto max-w-7xl px-4 md:px-8">
       <div class="text-center">
         <h2 id="contato-title" class="section-title text-[clamp(2.8rem,7.4vw,6.4rem)]" data-split>Vamos marcar o <em class="divo">seu momento?</em></h2>
