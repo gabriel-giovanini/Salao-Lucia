@@ -301,11 +301,11 @@
       return {
         cur:  { t: "translate3d(0vw, 0vh, 0) scale(1) rotate(0deg)", o: 1, f: "blur(0px) brightness(1)" },
         prev: mob
-          ? { t: "translate3d(-34vw, -22vh, 0) scale(0.36) rotate(-8deg)", o: 0.4, f: "blur(1.2px) brightness(0.88)" }
-          : { t: "translate3d(-22vw, -46vh, 0) scale(0.45) rotate(-8deg)", o: 0.55, f: "blur(1.2px) brightness(0.88)" },
+          ? { t: "translate3d(-34vw, -20vh, 0) scale(0.36) rotate(-8deg)", o: 0.4, f: "blur(1.2px) brightness(0.88)" }
+          : { t: "translate3d(-22vw, -44vh, 0) scale(0.45) rotate(-8deg)", o: 0.55, f: "blur(1.2px) brightness(0.88)" },
         next: mob
-          ? { t: "translate3d(36vw, -18vh, 0) scale(0.34) rotate(6deg)", o: 0.95, f: "blur(0px) brightness(1)" }
-          : { t: "translate3d(40vw, 33vh, 0) scale(0.26) rotate(4deg)", o: 0.96, f: "blur(0px) brightness(1)" },
+          ? { t: "translate3d(36vw, -16vh, 0) scale(0.34) rotate(6deg)", o: 0.95, f: "blur(0px) brightness(1)" }
+          : { t: "translate3d(40vw, 35vh, 0) scale(0.26) rotate(4deg)", o: 0.96, f: "blur(0px) brightness(1)" },
         outTop: { t: "translate3d(-30vw, -75vh, 0) scale(0.22) rotate(-18deg)", o: 0, f: "blur(4px) brightness(0.7)" },
         outBot: { t: "translate3d(55vw, 58vh, 0) scale(0.14) rotate(14deg)", o: 0, f: "blur(3px) brightness(0.8)" },
       };
@@ -349,17 +349,17 @@
       if (dir > 0) {
         // Avançando (como no vídeo): Centro voa p/ Topo-Esquerdo; Canto-Inferior-Direito voa p/ Centro; Topo-Esquerdo sai por cima e entra novo no Canto
         a1 = anim(orbitCur, [
-          { transform: pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
+          { transform: orbitCur.style.transform || pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
           { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
         ], { duration: dur, easing: flyEase, fill: "forwards" });
 
         a2 = anim(orbitNext, [
-          { transform: pos.next.t, opacity: pos.next.o },
+          { transform: orbitNext.style.transform || pos.next.t, opacity: pos.next.o },
           { transform: pos.cur.t, opacity: pos.cur.o },
         ], { duration: dur, easing: flyEase, fill: "forwards" });
 
         a3 = anim(orbitPrev, [
-          { transform: pos.prev.t, opacity: pos.prev.o },
+          { transform: orbitPrev.style.transform || pos.prev.t, opacity: pos.prev.o },
           { transform: pos.outTop.t, opacity: 0 },
         ], { duration: 380, easing: "ease-in", fill: "forwards" });
 
@@ -376,17 +376,17 @@
       } else {
         // Voltando: Topo-Esquerdo desce p/ Centro; Centro desce p/ Canto-Inferior-Direito; Canto sai e novo entra no Topo-Esquerdo
         a1 = anim(orbitCur, [
-          { transform: pos.cur.t, opacity: pos.cur.o },
+          { transform: orbitCur.style.transform || pos.cur.t, opacity: pos.cur.o },
           { transform: pos.next.t, opacity: pos.next.o },
         ], { duration: dur, easing: flyEase, fill: "forwards" });
 
         a2 = anim(orbitPrev, [
-          { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
+          { transform: orbitPrev.style.transform || pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
           { transform: pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
         ], { duration: dur, easing: flyEase, fill: "forwards" });
 
         a3 = anim(orbitNext, [
-          { transform: pos.next.t, opacity: pos.next.o },
+          { transform: orbitNext.style.transform || pos.next.t, opacity: pos.next.o },
           { transform: pos.outBot.t, opacity: 0 },
         ], { duration: 380, easing: "ease-in", fill: "forwards" });
 
@@ -401,6 +401,11 @@
           ], { duration: 540, easing: EASE, fill: "forwards" });
         }, 380);
       }
+
+      orbitCur.style.transform = "";
+      orbitPrev.style.transform = "";
+      orbitNext.style.transform = "";
+      if (shadowEl) shadowEl.style.transform = "";
 
       Promise.all([a1.finished, a2.finished]).then(function () {
         idx = next;
@@ -442,15 +447,92 @@
       if (e.key === "ArrowLeft") prevSlide();
     });
 
-    // Swipe no palco central
-    var sx = null;
-    stage.addEventListener("pointerdown", function (e) { sx = e.clientX; });
-    stage.addEventListener("pointerup", function (e) {
-      if (sx === null) return;
-      var dx = e.clientX - sx;
-      sx = null;
-      if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
-    });
+    // Arrastar (drag) em tempo real no PC e no Celular com retorno elástico ou troca de produto
+    var drag = null;
+    function applyDragVisual(dx, dy) {
+      var p = Math.max(-1, Math.min(1, dx / 220));
+      var rot = p * 12;
+      var sc = 1 - Math.abs(p) * 0.1;
+      orbitCur.style.transform = "translate3d(" + (dx * 0.55) + "px, " + (dy * 0.14) + "px, 0) scale(" + sc + ") rotate(" + rot + "deg)";
+      if (shadowEl) {
+        shadowEl.style.transform = "translateX(" + (dx * 0.32) + "px) scale(" + (1 - Math.abs(p) * 0.25) + ")";
+      }
+    }
+    function finishDrag(dx, moved) {
+      hero.classList.remove("is-dragging");
+      if (!moved) return;
+      if (Math.abs(dx) > 42) {
+        dx < 0 ? nextSlide() : prevSlide();
+      } else {
+        var curT = orbitCur.style.transform;
+        orbitCur.style.transform = "";
+        if (shadowEl) shadowEl.style.transform = "";
+        anim(orbitCur, [{ transform: curT }, { transform: orbitCoords().cur.t }], { duration: 500, easing: SPRING });
+      }
+    }
+    function onDown(e) {
+      if (busy) return;
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      if (e.target.closest("a, button")) return;
+      drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, dx: 0, dy: 0, moved: false };
+      hero.classList.add("is-dragging");
+    }
+    function onMove(e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      drag.dx = e.clientX - drag.sx;
+      drag.dy = e.clientY - drag.sy;
+      if (!drag.moved && Math.abs(drag.dx) > 6 && Math.abs(drag.dx) > Math.abs(drag.dy)) {
+        drag.moved = true;
+      }
+      if (!drag.moved) return;
+      applyDragVisual(drag.dx, drag.dy);
+    }
+    function onUp(e) {
+      if (!drag || (e.pointerId !== undefined && e.pointerId !== drag.id)) return;
+      var d = drag;
+      drag = null;
+      finishDrag(d.dx, d.moved);
+    }
+    hero.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+
+    // Suporte dedicado a Touch Events para navegadores mobile (iOS Safari / Chrome Android)
+    var tDrag = null;
+    hero.addEventListener("touchstart", function (e) {
+      if (busy || e.touches.length !== 1) return;
+      if (e.target.closest("a, button")) return;
+      var t = e.touches[0];
+      tDrag = { sx: t.clientX, sy: t.clientY, dx: 0, dy: 0, lock: null };
+    }, { passive: true });
+    hero.addEventListener("touchmove", function (e) {
+      if (!tDrag || e.touches.length !== 1) return;
+      var t = e.touches[0];
+      tDrag.dx = t.clientX - tDrag.sx;
+      tDrag.dy = t.clientY - tDrag.sy;
+      if (!tDrag.lock) {
+        if (Math.abs(tDrag.dx) > 6 && Math.abs(tDrag.dx) > Math.abs(tDrag.dy)) {
+          tDrag.lock = "x";
+          hero.classList.add("is-dragging");
+        } else if (Math.abs(tDrag.dy) > 8) {
+          tDrag.lock = "y";
+        }
+      }
+      if (tDrag.lock === "x") {
+        if (e.cancelable) e.preventDefault();
+        drag = null; // evita duplicação com pointer events
+        applyDragVisual(tDrag.dx, tDrag.dy);
+      }
+    }, { passive: false });
+    function onTouchEnd() {
+      if (!tDrag) return;
+      var td = tDrag;
+      tDrag = null;
+      if (td.lock === "x") finishDrag(td.dx, true);
+    }
+    hero.addEventListener("touchend", onTouchEnd, { passive: true });
+    hero.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     var first = products[0];
     wm.textContent = first.watermark || "";

@@ -154,6 +154,7 @@ img { -webkit-user-drag: none; }
 /* ---------------- Hero (vitrine de produtos — coreografia 3D do vídeo) ---------------- */
 .hero {
   position: relative; min-height: 100svh; overflow: hidden; isolation: isolate;
+  touch-action: pan-y;
   background:
     radial-gradient(50% 60% at 50% 54%, color-mix(in srgb, var(--p-glow) 68%, transparent), transparent 72%),
     radial-gradient(75% 75% at 88% 12%, color-mix(in srgb, var(--p-glow) 34%, transparent), transparent 70%),
@@ -177,10 +178,10 @@ img { -webkit-user-drag: none; }
   position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
 }
 .orbit-node {
-  position: absolute; left: 50%; top: 53%;
-  width: min(68vw, 430px, 56svh); aspect-ratio: 1;
-  margin-left: calc(min(68vw, 430px, 56svh) / -2);
-  margin-top: calc(min(68vw, 430px, 56svh) / -2);
+  position: absolute; left: 50%; top: 48%;
+  width: min(64vw, 400px, 50svh); aspect-ratio: 1;
+  margin-left: calc(min(64vw, 400px, 50svh) / -2);
+  margin-top: calc(min(64vw, 400px, 50svh) / -2);
   display: grid; place-items: center;
   padding: 0; border: 0; background: none;
   transform-origin: center center; will-change: transform, opacity, filter;
@@ -188,40 +189,43 @@ img { -webkit-user-drag: none; }
 }
 .orbit-node img {
   display: block; width: 100%; height: 100%; max-width: none; object-fit: contain;
-  filter: drop-shadow(0 38px 42px rgba(0,0,0,.62)) drop-shadow(0 0 38px color-mix(in srgb, var(--p-glow) 40%, transparent));
+  filter: none;
   user-select: none; pointer-events: none;
 }
 .orbit-node[data-pos="current"] {
-  z-index: 3; pointer-events: none;
+  z-index: 3; pointer-events: auto; cursor: grab;
+  touch-action: pan-y;
   transform: translate3d(0vw, 0vh, 0) scale(1) rotate(0deg);
 }
+.orbit-node[data-pos="current"]:active { cursor: grabbing; }
 .orbit-node[data-pos="prev"] {
   z-index: 1; pointer-events: auto; cursor: pointer; opacity: 0.55;
   filter: blur(1.2px) brightness(0.88);
-  transform: translate3d(-22vw, -46vh, 0) scale(0.45) rotate(-8deg);
+  transform: translate3d(-22vw, -44vh, 0) scale(0.45) rotate(-8deg);
   transition: opacity .5s var(--ease-out), filter .5s var(--ease-out);
 }
 .orbit-node[data-pos="prev"]:hover { opacity: 0.85; filter: blur(0px) brightness(1); }
 .orbit-node[data-pos="next"] {
   z-index: 3; pointer-events: auto; cursor: pointer; opacity: 0.96;
-  transform: translate3d(40vw, 33vh, 0) scale(0.26) rotate(4deg);
+  transform: translate3d(40vw, 35vh, 0) scale(0.26) rotate(4deg);
   transition: opacity .5s var(--ease-out), filter .5s var(--ease-out);
 }
 .orbit-node[data-pos="next"]:hover { filter: brightness(1.12); }
 
-/* Sombra realista sob o produto principal */
+/* Sombra de chão (floor shadow) mais larga e intensa EMBAIXO da base padronizada do produto */
 .stage-shadow {
-  position: absolute; left: 50%; top: calc(53% + min(31vw, 195px, 26svh));
-  width: min(38vw, 240px); height: 28px; translate: -50% 0; border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0,0,0,.85), rgba(0,0,0,.35) 55%, transparent);
-  filter: blur(6px); z-index: 1; pointer-events: none;
+  position: absolute; left: 50%;
+  top: calc(48% + (min(64vw, 400px, 50svh) * 0.44));
+  width: min(56vw, 330px); height: 38px; translate: -50% 0; border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.96) 0%, rgba(0,0,0,.78) 42%, rgba(0,0,0,.28) 74%, transparent 100%);
+  filter: blur(10px); z-index: 2; pointer-events: none;
 }
 
 .hero-stage-spacer {
   width: 100%; min-height: min(62vw, 390px, 50svh);
-  touch-action: pan-y; cursor: grab;
+  touch-action: pan-y; cursor: grab; user-select: none;
 }
-.hero-stage-spacer:active { cursor: grabbing; }
+.hero.is-dragging, .hero.is-dragging * { cursor: grabbing !important; user-select: none !important; }
 
 /* Botões de seta (< >) minimalistas em vidro (como no vídeo) */
 .hero-arrow-btn {
@@ -260,14 +264,17 @@ img { -webkit-user-drag: none; }
 
 @media (max-width: 1023px) {
   .orbit-node {
-    top: 32%;
-    width: min(56vw, 290px, 38svh);
-    margin-left: calc(min(56vw, 290px, 38svh) / -2);
-    margin-top: calc(min(56vw, 290px, 38svh) / -2);
+    top: 30%;
+    width: min(52vw, 270px, 34svh);
+    margin-left: calc(min(52vw, 270px, 34svh) / -2);
+    margin-top: calc(min(52vw, 270px, 34svh) / -2);
   }
-  .orbit-node[data-pos="prev"] { transform: translate3d(-34vw, -22vh, 0) scale(0.36) rotate(-8deg); opacity: 0.4; }
-  .orbit-node[data-pos="next"] { transform: translate3d(36vw, -18vh, 0) scale(0.34) rotate(6deg); }
-  .stage-shadow { top: calc(32% + min(25vw, 130px, 17svh)); width: min(36vw, 180px); }
+  .orbit-node[data-pos="prev"] { transform: translate3d(-34vw, -20vh, 0) scale(0.36) rotate(-8deg); opacity: 0.4; }
+  .orbit-node[data-pos="next"] { transform: translate3d(36vw, -16vh, 0) scale(0.34) rotate(6deg); }
+  .stage-shadow {
+    top: calc(30% + (min(52vw, 270px, 34svh) * 0.44));
+    width: min(50vw, 240px); height: 30px;
+  }
   .hero-stage-spacer { min-height: min(54vw, 270px, 36svh); }
 }
 
