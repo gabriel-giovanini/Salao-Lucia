@@ -44,7 +44,7 @@
   <script>document.documentElement.classList.remove("no-js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -62,25 +62,25 @@
   <div class="scroll-progress" data-progress aria-hidden="true"></div>
 
   <!-- ===================== MENU FLUTUANTE ===================== -->
-  <header class="site-header fixed inset-x-0 top-0 z-[100] px-4 pt-4 md:px-8 md:pt-5">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
-      <a href="#inicio" class="wordmark no-underline" aria-label="Studio Lucia Ferraz — início">
-        Studio Lucia Ferraz
-        <small>Consultora Moments Paris</small>
+  <header class="site-header hx-header fixed inset-x-0 top-0 z-[100] px-4 pt-4 md:px-8 md:pt-5">
+    <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-4">
+      <a href="#inicio" class="hx-logo hx-intro-h" aria-label="Studio Lucia Ferraz — início">
+        <span class="hx-mono" aria-hidden="true">LF</span>
+        <span class="hx-name wordmark"><span class="hidden xl:inline">STUDIO </span>LUCIA FERRAZ</span>
       </a>
 
-      <nav aria-label="Principal" class="hidden lg:block">
-        <ul class="nav-pill glass flex items-center gap-1 rounded-full p-[5px] text-sm font-semibold" data-nav>
+      <nav aria-label="Principal" class="hx-intro-h hidden lg:block">
+        <ul class="nav-pill hx-pill" data-nav>
           <li aria-hidden="true" class="nav-indicator" data-nav-indicator></li>
-          <li><a class="block rounded-full px-4 py-2 no-underline" href="#inicio">Produtos</a></li>
-          <li><a class="block rounded-full px-4 py-2 no-underline" href="#moments">Moments Paris</a></li>
-          <li><a class="block rounded-full px-4 py-2 no-underline" href="#studio">O Studio</a></li>
-          <li><a class="block rounded-full px-4 py-2 no-underline" href="#avaliacoes">Avaliações</a></li>
-          <li><a class="block rounded-full px-4 py-2 no-underline" href="#contato">Contato</a></li>
+          <li><a href="#inicio" data-cat="moments">Moments Paris</a></li>
+          <li><a href="#inicio" data-cat="vogens">Vogens</a></li>
+          <li><a href="#studio">O Studio</a></li>
+          <li><a href="#avaliacoes">Avaliações</a></li>
+          <li><a href="#contato">Contato</a></li>
         </ul>
       </nav>
 
-      <div class="flex items-center gap-2">
+      <div class="hx-intro-h flex items-center gap-2">
         <button type="button" class="btn btn-primary hidden sm:inline-flex" data-open-drawer data-magnetic>
           <i data-lucide="calendar-heart" class="h-4 w-4" aria-hidden="true"></i> Agendar
         </button>
@@ -92,6 +92,18 @@
         </button>
       </div>
     </div>
+
+    <!-- celular: pílula vira uma linha com rolagem horizontal -->
+    <nav aria-label="Categorias" class="hx-intro-h no-scrollbar mx-auto mt-3 max-w-full overflow-x-auto lg:hidden">
+      <ul class="hx-pill hx-pill-mobile" data-nav-mobile>
+        <li><a href="#inicio" data-cat="moments">Moments Paris</a></li>
+        <li><a href="#inicio" data-cat="vogens">Vogens</a></li>
+        <li><a href="#studio">O Studio</a></li>
+        <li><a href="#avaliacoes">Avaliações</a></li>
+        <li><a href="#agendar">Agendar</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
 
     <nav id="mobile-menu" class="mobile-menu glass-strong mx-auto mt-3 max-w-7xl rounded-3xl p-3 lg:hidden" aria-label="Menu móvel">
       <ul class="grid gap-1 text-base font-semibold">
@@ -106,84 +118,75 @@
   </header>
 
   <main id="conteudo">
-    <!-- ===================== 1. HERO — VITRINE DE PRODUTOS (choreografia do vídeo) ===================== -->
-    <section id="inicio" class="hero" data-hero aria-roledescription="carrossel" aria-label="Produtos em destaque">
-      <div class="hero-spot" aria-hidden="true"></div>
-      <div class="watermark" data-watermark aria-hidden="true">MOMENTS</div>
+    <!-- ===================== 1. HERO — VITRINE DE PRODUTOS (js/hero.js) ===================== -->
+    <section id="inicio" class="hx" data-hero aria-roledescription="carrossel" aria-label="Produtos em destaque">
+      <div class="hx-bg" aria-hidden="true"></div>
+      <div class="hx-grain" aria-hidden="true"></div>
+      <div class="hx-vignette" aria-hidden="true"></div>
 
-      <!-- Camada 3D de voo dos produtos (Anterior no topo · Atual no centro · Próximo no canto) -->
-      <div class="hero-orbit" data-hero-orbit>
-        <button type="button" class="orbit-node" data-orbit-prev data-pos="prev" aria-label="Ver produto anterior">
-          <img src="Assets/Produtos/fios-hidratados-shampoo.png" alt="" width="500" height="500" />
-        </button>
-        <div class="orbit-node" data-orbit-cur data-pos="current">
-          <img src="Assets/Produtos/best-girl-moments.png" alt="Best Girl Moments" width="600" height="600" />
-        </div>
-        <button type="button" class="orbit-node" data-orbit-next data-pos="next" aria-label="Ver próximo produto">
-          <img src="Assets/Produtos/cabelo-pele-unhas.png" alt="" width="500" height="500" />
-        </button>
-        <div class="stage-shadow" data-stage-shadow aria-hidden="true"></div>
-      </div>
+      <!-- marca d'água: parallax no wrapper, troca de texto no filho -->
+      <div class="hx-wm-par" data-wm-par aria-hidden="true"><div class="hx-wm" data-wm>MOMENTS</div></div>
 
-      <!-- Grade UI sobre o palco -->
-      <div class="hero-grid relative z-[4] mx-auto grid min-h-[100svh] max-w-7xl grid-cols-1 content-between px-5 pb-8 pt-24 md:px-8 lg:grid-cols-[1fr_minmax(300px,440px)_1fr] lg:items-center lg:pb-12">
-        <!-- Esquerda: setas (< >), título editorial, descrição concisa, CTA branco -->
-        <div class="hero-col-left order-2 text-center lg:order-1 lg:text-left" data-hero-left>
-          <div class="mb-5 inline-flex items-center gap-2.5 lg:flex">
-            <button type="button" class="hero-arrow-btn" data-hero-prev aria-label="Produto anterior">
-              <i data-lucide="chevron-left" class="h-4 w-4" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="hero-arrow-btn" data-hero-next aria-label="Próximo produto">
-              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
-            </button>
-            <span class="counter-num ml-2 text-xs text-white/60"><span class="cur text-white" data-hero-cur>01</span> / <span data-hero-total>05</span></span>
+      <!-- palco: scroll (GSAP) > tilt (GSAP) > levitação (CSS) > item (GSAP) -->
+      <div class="hx-stage-scroll" data-stage-scroll>
+        <div class="hx-stage" data-stage>
+          <div class="hx-shadow-par" data-shadow-par aria-hidden="true">
+            <div class="hx-shadow-anim"><div class="hx-shadow" data-shadow></div></div>
           </div>
-
-          <p class="eyebrow !text-white/75" data-hero-kicker>Moments Paris · Hidratante corporal · 200 g</p>
-          <h1 class="section-title mt-2 text-[clamp(2.35rem,4.6vw,4.1rem)] font-medium leading-[1.04] tracking-[-0.03em]" data-hero-title>Best Girl Moments</h1>
-          <p class="mx-auto mt-3.5 max-w-md text-sm leading-relaxed text-white/75 lg:mx-0 lg:text-[0.94rem]" data-hero-desc>Hidratante corporal perfumado Best Girl da Moments Paris (200 g). Peça com a consultora e consulte valor e disponibilidade pelo WhatsApp.</p>
-
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-            <a class="btn btn-primary" data-hero-buy href="#" target="_blank" rel="noopener" data-magnetic>
-              Pedir pelo WhatsApp <i data-lucide="chevron-right" class="arrow h-4 w-4" aria-hidden="true"></i>
-            </a>
+          <div class="hx-tilt" data-tilt3d>
+            <div class="hx-float">
+              <div class="hx-holder" data-holder></div>
+            </div>
           </div>
-        </div>
-
-        <!-- Centro: espaço reservado para o produto 3D em destaque (suporta swipe) -->
-        <div class="hero-stage-spacer order-1 lg:order-2" data-stage aria-hidden="true"></div>
-
-        <!-- Direita: preço em destaque + seletor circular de produtos (estilo 36 · 38 · 40 do vídeo) -->
-        <div class="hero-col-right order-3 flex flex-col items-center lg:items-end lg:text-right" data-hero-right>
-          <div class="hero-price-box" data-hero-price-box>
-            <p class="font-display text-[clamp(2.3rem,4vw,3.5rem)] font-semibold leading-none tracking-tight text-white" data-hero-price>R$ 79,90</p>
-            <p class="font-display mt-1 text-xl text-white/45 line-through decoration-white/60" data-hero-old-price>R$ 99,90</p>
-          </div>
-
-          <p class="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/65">Escolha o produto:</p>
-          <div class="mt-3 flex flex-wrap justify-center gap-2.5 lg:justify-end" role="group" aria-label="Escolha o produto" data-hero-picks></div>
         </div>
       </div>
 
-      <!-- Rodapé do Hero: ícones rápidos à esquerda + frase de assinatura centralizada embaixo do produto -->
-      <div class="pointer-events-none absolute inset-x-0 bottom-5 z-[4] mx-auto flex max-w-7xl items-end justify-between px-5 md:px-8">
-        <div class="pointer-events-auto hidden items-center gap-2.5 lg:flex">
-          <a class="hero-mini-icon" data-wa-default href="https://wa.me/5519971602364" target="_blank" rel="noopener" aria-label="WhatsApp">
-            <i data-lucide="message-circle" class="h-4 w-4" aria-hidden="true"></i>
-          </a>
-          <a class="hero-mini-icon" data-maps-link href="#" target="_blank" rel="noopener" aria-label="Localização no Google Maps">
-            <i data-lucide="map-pin" class="h-4 w-4" aria-hidden="true"></i>
-          </a>
-          <a class="hero-mini-icon" data-tel href="tel:+5519971602364" aria-label="Ligar para o Studio">
-            <i data-lucide="phone" class="h-4 w-4" aria-hidden="true"></i>
-          </a>
+      <!-- esquerda -->
+      <div class="hx-left" data-hero-left>
+        <div class="hx-navrow">
+          <button type="button" class="hx-arrow" data-hero-prev aria-label="Produto anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="hx-arrow" data-hero-next aria-label="Próximo produto">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <span class="hx-count" aria-live="polite"><span class="clip"><span class="inner" data-cur>01</span></span><span class="hx-count-total">&nbsp;/&nbsp;<span data-total>05</span></span></span>
         </div>
+        <p class="hx-kicker" data-kicker>Moments · Best Girl</p>
+        <h1 class="hx-title" data-title><span class="clip"><span class="inner">Best Girl</span></span><span class="clip"><span class="inner">Moments</span></span></h1>
+        <div class="clip"><p class="inner hx-desc" data-desc></p></div>
+        <a class="hx-cta" data-buy href="https://wa.me/5519971602364" target="_blank" rel="noopener">
+          <span>Pedir pelo WhatsApp</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
 
-        <p class="mx-auto text-center text-base font-medium tracking-[-0.01em] text-white/85 md:text-lg" data-hero-tagline>
-          Hidratação &amp; perfume em cada toque
-        </p>
+      <!-- direita -->
+      <div class="hx-right" data-hero-right>
+        <div class="clip"><p class="inner hx-price" data-price>R$ 79,90</p></div>
+        <div class="clip"><p class="inner hx-old" data-old>R$ 99,90</p></div>
+        <div class="clip hx-optlabel-wrap"><p class="inner hx-optlabel" data-optlabel>Escolha o produto:</p></div>
+        <div class="hx-picks" role="group" aria-label="Escolha o produto" data-picks></div>
+      </div>
 
-        <div class="hidden w-[110px] lg:block" aria-hidden="true"></div>
+      <!-- rodapé do hero -->
+      <div class="hx-bottom">
+        <div class="hx-icons">
+          <a class="hx-mini" data-wa-default href="https://wa.me/5519971602364" target="_blank" rel="noopener" aria-label="WhatsApp"><i data-lucide="message-circle" class="h-4 w-4" aria-hidden="true"></i></a>
+          <a class="hx-mini" data-maps-link href="#" target="_blank" rel="noopener" aria-label="Como chegar"><i data-lucide="map-pin" class="h-4 w-4" aria-hidden="true"></i></a>
+          <a class="hx-mini" data-tel href="tel:+5519971602364" aria-label="Ligar"><i data-lucide="phone" class="h-4 w-4" aria-hidden="true"></i></a>
+        </div>
+        <div class="hx-bottom-center">
+          <p class="hx-tagline" data-tagline>Hidratação &amp; perfume<br />em cada toque</p>
+          <div class="hx-dots" role="group" aria-label="Produtos" data-dots></div>
+        </div>
+        <button type="button" class="hx-next" data-next-thumb aria-label="Ver próximo produto">
+          <span class="hx-next-in" data-next-in><span class="hx-next-hover">
+            <span class="hx-next-float"><span class="hx-next-box"><img data-next-img alt="" /></span></span>
+            <span class="hx-next-shadow" aria-hidden="true"></span>
+          </span></span>
+          <span class="hx-next-label">Próximo · <span data-next-name></span></span>
+        </button>
       </div>
     </section>
 
@@ -488,8 +491,6 @@
   </a>
 
   <div class="toast glass-strong" role="status" aria-live="polite" data-toast></div>
-  <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true"></div>
 
   <noscript>
     <style>.preloader{display:none}.rv{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}</style>
@@ -505,5 +506,6 @@
   <script src="js/config.js" defer></script>
   <script src="js/whatsapp.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/hero.js" defer></script>
 </body>
 </html>

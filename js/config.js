@@ -98,7 +98,7 @@ window.SITE_CONFIG = {
   /* ---------------------------------------------------------------------- */
   // PRODUTOS — aparecem no palco do topo e na vitrine.
   // ATENÇÃO: os preços atuais são FICTÍCIOS (exemplo pedido pelo cliente) — troque pelos reais antes de publicar.
-  // price: null = "Sob consulta". colors: [brilho, fundo, destaque]
+  // price: null = "Sob consulta". colors: [claro, médio, escuro] (fundo do topo, interpolado na troca).
   // watermark: palavra gigante atrás do produto no topo.
   productCategories: [
     { id: "moments", label: "Moments Paris" },
@@ -116,9 +116,16 @@ window.SITE_CONFIG = {
       image: "Assets/Produtos/best-girl-moments.png",
       description: "Hidratante corporal perfumado Best Girl da Moments Paris (200 g). Peça com a consultora e consulte valor e disponibilidade pelo WhatsApp.",
       watermark: "MOMENTS",
-      colors: ["#e0b054", "#1b1409", "#f8dfa6"],
+      colors: ["#f1cf8a", "#9a6a2a", "#140c05"], // [claro, médio, escuro] — fundo do topo
       price: "R$ 79,90", // FICTÍCIO
       oldPrice: "R$ 99,90", // FICTÍCIO
+      // Apresentação no topo (hero)
+      kicker: "Moments · Best Girl",
+      title: ["Best Girl", "Moments"],
+      taglineLines: ["Hidratação & perfume", "em cada toque"],
+      scale: 1, // ajuste fino do tamanho no palco (ex.: 1.1)
+      optLabel: "Escolha o produto:",
+      option: "200 g", // vai na mensagem do WhatsApp
       published: true,
     },
     {
@@ -132,9 +139,16 @@ window.SITE_CONFIG = {
       image: "Assets/Produtos/cabelo-pele-unhas.png",
       description: "Suplemento alimentar Moments Paris rico em biotina e antioxidantes (30 cápsulas · 720 mg). Zero açúcares e sem glúten. Consulte valor e disponibilidade.",
       watermark: "PARIS",
-      colors: ["#b94be0", "#220a30", "#f2b8ff"],
+      colors: ["#c98bff", "#6a1f9e", "#13051c"], // [claro, médio, escuro] — fundo do topo
       price: "R$ 89,90", // FICTÍCIO
       oldPrice: "R$ 119,90", // FICTÍCIO
+      // Apresentação no topo (hero)
+      kicker: "Moments · Cabelo Pele & Unhas",
+      title: ["Cabelo, Pele", "& Unhas"],
+      taglineLines: ["Rico em biotina", "e antioxidantes"],
+      scale: 1, // ajuste fino do tamanho no palco (ex.: 1.1)
+      optLabel: "Escolha o produto:",
+      option: "30 cápsulas", // vai na mensagem do WhatsApp
       published: true,
     },
     {
@@ -148,9 +162,16 @@ window.SITE_CONFIG = {
       image: "Assets/Produtos/honey-mask.png",
       description: "Máscara capilar biotecnológica com ação queratina, brilho de diamante e D-Pantenol (500 g). Uso profissional para cabelos mais fortes.",
       watermark: "HONEY",
-      colors: ["#f0a830", "#291804", "#ffe09e"],
+      colors: ["#ffc94d", "#c27a0e", "#241102"], // [claro, médio, escuro] — fundo do topo
       price: "R$ 99,90", // FICTÍCIO
       oldPrice: "R$ 129,90", // FICTÍCIO
+      // Apresentação no topo (hero)
+      kicker: "Vogens · Honey Mask",
+      title: ["Honey", "Mask 3D"],
+      taglineLines: ["Nutrição 3D e", "brilho de diamante"],
+      scale: 1, // ajuste fino do tamanho no palco (ex.: 1.1)
+      optLabel: "Escolha o produto:",
+      option: "500 g", // vai na mensagem do WhatsApp
       published: true,
     },
     {
@@ -164,9 +185,16 @@ window.SITE_CONFIG = {
       image: "Assets/Produtos/kit-honey-guard.png",
       description: "Linha profissional Vogens com Honey Mask (500 g) e tratamento capilar Guard (Shampoo 1000 ml + Condicionador + Leave-in 240 ml). Consulte disponibilidade.",
       watermark: "GUARD",
-      colors: ["#9c4dcc", "#190c26", "#e4bfff"],
+      colors: ["#e3cf98", "#5a4f3b", "#0b0a08"], // [claro, médio, escuro] — fundo do topo
       price: "R$ 249,90", // FICTÍCIO
       oldPrice: "R$ 299,90", // FICTÍCIO
+      // Apresentação no topo (hero)
+      kicker: "Vogens · Kit Guard & Honey",
+      title: ["Kit Guard", "& Honey"],
+      taglineLines: ["Tratamento capilar", "completo no salão"],
+      scale: 1, // ajuste fino do tamanho no palco (ex.: 1.1)
+      optLabel: "Escolha o produto:",
+      option: "Kit 4 itens", // vai na mensagem do WhatsApp
       published: true,
     },
     {
@@ -180,9 +208,16 @@ window.SITE_CONFIG = {
       image: "Assets/Produtos/fios-hidratados-shampoo.png",
       description: "Shampoo Hidratante Fios Hidratados Passo 1 (2,5 L) — pH balanceado, sem parabenos e brilho intenso. Consulte valor e disponibilidade pelo WhatsApp.",
       watermark: "FIOS",
-      colors: ["#d4942a", "#1f1405", "#ffd98a"],
+      colors: ["#ffa857", "#a8460c", "#1a0903"], // [claro, médio, escuro] — fundo do topo
       price: "R$ 129,90", // FICTÍCIO
       oldPrice: "R$ 159,90", // FICTÍCIO
+      // Apresentação no topo (hero)
+      kicker: "Vogens · Fios Hidratados",
+      title: ["Fios", "Hidratados nº 1"],
+      taglineLines: ["Hidratação profunda e", "controle do frizz"],
+      scale: 1, // ajuste fino do tamanho no palco (ex.: 1.1)
+      optLabel: "Escolha o produto:",
+      option: "2,5 L", // vai na mensagem do WhatsApp
       published: true,
     },
   ],

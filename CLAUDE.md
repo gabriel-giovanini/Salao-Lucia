@@ -7,8 +7,10 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
 ## Identidade visual
 - Base preto & branco (cores da Moments Paris). Acentos femininos/"divo": rosa `--pink #ff4f9a`,
   `--blush #ffc2dc`, brilhos e shimmer. Cada produto tem cor própria (`products[].colors`).
-- Tipografia: **Plus Jakarta Sans** (títulos e texto) e **Syne** (caps/etiquetas, `.font-caps`). Fontes antigas
-  (Cormorant, Cinzel, Manrope) não são mais usadas.
+- Tipografia do **topo e cabeçalho** (sistema do site de referência Batal): **Montserrat** 500–900 (título 800, preço 700,
+  kicker 700 12px .25em, menu 600 13px, logo 800 .22em, marca d'água 900 só contorno) e **DM Sans** (descrição 15px/1.65, botões).
+  Demais seções: **Plus Jakarta Sans** + **Syne** (`.font-caps`).
+- Logo: monograma branco “LF” (Montserrat 900) + “STUDIO LUCIA FERRAZ”; o quadradinho gira -8° no hover.
 - O Studio **não tem logotipo**: usar o nome em texto (wordmark). Logo da Moments Paris em `Assets/Marcas/`.
 - Diferenciais LGBTQ+ / empreendedoras aparecem, mas com destaque menor que Moments Paris.
 
@@ -17,9 +19,14 @@ Objetivos: **destacar que o Studio é consultora Moments Paris**, vitrine de pro
   ou camada animada em tela cheia (o site travava). Animações só ao entrar/sair da tela, ao trocar produto
   ou no hover. Faixas (marquee) se movem apenas enquanto a página rola.
 - O topo é minimalista: foto, marca curta, nome, preço e um botão. Sem descrições longas.
-- Hero = palco 3D com coreografia orbital (produto atual + anterior/próximo em órbita, `data-orbit-*` em `js/main.js`),
-  com arraste por toque e mouse. Todos os produtos usam o mesmo tamanho/base no palco e sombra no chão.
-- **Nunca** desligar animações por `prefers-reduced-motion` (pedido explícito do cliente).
+- Topo (hero) vive em **`js/hero.js`** (`window.SLFHero`): fotos com recorte automático da transparência (canvas) e
+  normalizadas a 85% × 88% de uma caixa quadrada (`scale` por produto no config), transições com mola (GSAP),
+  tilt 3D/parallax no mouse, setas, teclado ← →, swipe, miniatura “próximo”, bolinhas de progresso, seletores
+  com contagem de preço e voo do produto até o WhatsApp. Fundo do topo = `colors: [claro, médio, escuro]` do produto.
+- **Exceções pedidas (2026-11-18):** levitação contínua do produto/miniatura e sombra no chão (CSS, só `transform`/`opacity`)
+  e granulado estático no topo. CSS no wrapper, GSAP no filho — nunca no mesmo elemento.
+- `prefers-reduced-motion`: o **topo** respeita (desliga levitação, tilt, intro e transições com mola — pedido de 2026-11-18).
+  O resto do site continua animando.
 - Revelações: classe `.rv` + `data-anim="up|down|left|right|scale|blur|rotate|flip|clip|clipx|pop"`,
   atraso via `style="--d:.1s"`. Títulos com `data-split` (letra a letra). Funciona via IntersectionObserver
   + CSS, sem depender de CDN.

@@ -20,7 +20,7 @@ const assetExists = (p) => existsSync(join(ROOT, p));
 
 // 1. Sintaxe JS
 console.log("\n1) Sintaxe JavaScript");
-for (const f of ["js/config.js", "js/whatsapp.js", "js/main.js", "scripts/serve.mjs", "scripts/build.mjs"]) {
+for (const f of ["js/config.js", "js/whatsapp.js", "js/main.js", "js/hero.js", "scripts/serve.mjs", "scripts/build.mjs"]) {
   const r = spawnSync(process.execPath, ["--check", join(ROOT, f)], { encoding: "utf8" });
   r.status === 0 ? ok(f) : err(`Erro de sintaxe em ${f}:\n${r.stderr}`);
 }

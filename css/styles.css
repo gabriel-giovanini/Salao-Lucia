@@ -521,3 +521,169 @@ html, body { overflow-x: clip; max-width: 100%; }
 /* imagem do palco sempre cabe no quadrado, qualquer proporção */
 .stage-item { display: block; }
 .stage-item img { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; }
+
+/* ==========================================================================
+   HERO v3 — sistema tipográfico Montserrat + DM Sans, palco 3D, fundo por produto
+   (js/hero.js). Regra: animação CSS no wrapper, GSAP no filho.
+   ========================================================================== */
+:root { --c1: #f1cf8a; --c2: #9a6a2a; --c3: #140c05; --hx-box: min(34vw, 58vh); }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.font-mont { font-family: "Montserrat", system-ui, sans-serif; }
+
+/* ---------- header ---------- */
+.hx-logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
+.hx-mono { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: #fff; color: #000;
+  font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 14px; letter-spacing: -.02em; transition: transform .6s cubic-bezier(.34,1.56,.64,1); }
+.hx-logo:hover .hx-mono { transform: rotate(-8deg); }
+.hx-name { font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 13px; letter-spacing: .22em; line-height: 1; white-space: nowrap; }
+.hx-pill { position: relative; display: flex; align-items: center; gap: 2px; padding: 5px; border-radius: 999px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px -12px rgba(0,0,0,.4); list-style: none; margin: 0; }
+.hx-pill a { position: relative; z-index: 1; display: block; padding: 9px 16px; border-radius: 999px; text-decoration: none; white-space: nowrap;
+  font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: rgba(255,255,255,.9); transition: color .35s ease; }
+.hx-pill a.is-active { color: #111; }
+.hx-pill a:not(.is-active):hover { color: #fff; }
+.hx-pill .nav-indicator { position: absolute; top: 5px; bottom: 5px; left: 0; width: 0; border-radius: 999px; background: #fff; z-index: 0; opacity: 0;
+  box-shadow: 0 6px 18px -6px rgba(0,0,0,.4); transition: opacity .3s; }
+.hx-pill-mobile { width: max-content; margin: 0 auto; }
+.hx-pill-mobile a { padding: 8px 14px; font-size: 12px; }
+.hx-pill-mobile a.is-active { background: #fff; color: #111; }
+.site-header.on-light .hx-logo { color: #000; }
+.site-header.on-light .hx-mono { background: #000; color: #fff; }
+.site-header.on-light .hx-pill { background: rgba(255,255,255,.75); border-color: rgba(0,0,0,.1); }
+.site-header.on-light .hx-pill a { color: #111; }
+.site-header.on-light .hx-pill a.is-active { color: #fff; }
+.site-header.on-light .hx-pill .nav-indicator { background: #000; }
+
+/* ---------- seção ---------- */
+.hx { position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; color: #fff; }
+.hx-bg { position: absolute; inset: 0; z-index: -3; background: radial-gradient(110% 85% at 50% 45%, var(--c1) 0%, var(--c2) 40%, var(--c3) 100%); }
+.hx-grain { position: absolute; inset: 0; z-index: -2; opacity: .09; mix-blend-mode: overlay; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.hx-vignette { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.35)); }
+
+.hx-wm-par { position: absolute; left: 50%; top: 50%; z-index: 0; translate: -50% -50%; pointer-events: none; user-select: none; }
+.hx-wm { font-family: "Montserrat", sans-serif; font-weight: 900; font-size: clamp(7rem, 24vw, 26rem); letter-spacing: -.04em; line-height: .8; white-space: nowrap;
+  color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.13); }
+
+/* ---------- palco ---------- */
+.hx-stage-scroll { position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -46%; }
+.hx-stage { position: relative; width: var(--hx-box); aspect-ratio: 1; perspective: 1300px; touch-action: pan-y; cursor: grab; }
+.hx-stage:active { cursor: grabbing; }
+.hx-tilt { position: absolute; inset: 0; transform-style: preserve-3d; }
+.hx-float { position: absolute; inset: 0; animation: hxFloat 4.2s ease-in-out infinite; transform-style: preserve-3d; }
+.hx-holder { position: absolute; inset: 0; }
+.hx-item { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; will-change: transform, opacity; }
+.hx-item img { width: 85%; height: 88%; object-fit: contain; filter: drop-shadow(0 28px 30px rgba(0,0,0,.35)); user-select: none; -webkit-user-drag: none; pointer-events: none; }
+@keyframes hxFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-22px); } }
+
+.hx-shadow-par { position: absolute; left: 11%; right: 11%; bottom: -11%; height: 13%; }
+.hx-shadow-anim { position: absolute; inset: 0; animation: hxShadow 4.2s ease-in-out infinite; }
+.hx-shadow { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), rgba(0,0,0,.35) 55%, transparent); }
+@keyframes hxShadow { 0%, 100% { transform: scale(1); opacity: .62; filter: blur(14px); } 50% { transform: scale(.74); opacity: .3; filter: blur(22px); } }
+
+/* ---------- máscaras de texto ---------- */
+.hx .clip { display: block; overflow: hidden; }
+.hx .clip > .inner { display: block; will-change: transform; }
+
+/* ---------- coluna esquerda ---------- */
+.hx-left { position: absolute; left: 5vw; top: 50%; translate: 0 -50%; z-index: 3; max-width: min(28vw, 520px); }
+.hx-navrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.hx-arrow { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; cursor: pointer; color: #fff;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  transition: background-color .3s, color .3s, transform .5s cubic-bezier(.34,1.56,.64,1); }
+.hx-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.hx-arrow:hover { background: #fff; color: #111; }
+.hx-arrow:active { transform: scale(.92); }
+.hx-count { display: inline-flex; align-items: baseline; margin-left: 6px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; }
+.hx-count .clip { display: inline-block; }
+.hx-count .inner { color: rgba(255,255,255,.8); }
+.hx-count-total { color: rgba(255,255,255,.45); }
+.hx-kicker { font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .25em; text-transform: uppercase; color: rgba(255,255,255,.75); white-space: nowrap; margin: 0 0 14px; }
+.hx-title { font-family: "Montserrat", sans-serif; font-weight: 800; font-size: clamp(2.1rem, 3.7vw, 4.4rem); line-height: 1.02; letter-spacing: -.02em; margin: 0;
+  filter: drop-shadow(0 4px 18px rgba(0,0,0,.18)); }
+.hx-title .clip { padding-bottom: .06em; margin-bottom: -.06em; }
+.hx-desc { font-family: "DM Sans", sans-serif; font-size: 15px; line-height: 1.65; color: rgba(255,255,255,.85); max-width: 28rem; margin: 18px 0 0; }
+.hx-cta { margin-top: 28px; display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px 12px 24px; border-radius: 999px; background: #fff; color: #111;
+  font-family: "DM Sans", sans-serif; font-weight: 600; font-size: 14px; text-decoration: none; box-shadow: 0 14px 30px -10px rgba(0,0,0,.45);
+  transition: gap .35s cubic-bezier(.16,1,.3,1), transform .25s ease, box-shadow .35s ease; }
+.hx-cta svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.hx-cta:hover { gap: 14px; box-shadow: 0 18px 36px -10px rgba(0,0,0,.55); }
+.hx-cta:active { transform: scale(.95); }
+
+/* ---------- coluna direita ---------- */
+.hx-right { position: absolute; right: 5vw; top: 50%; translate: 0 -50%; z-index: 3; text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.hx-price { font-family: "Montserrat", sans-serif; font-weight: 700; font-size: clamp(2.6rem, 4.2vw, 4.2rem); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin: 0; white-space: nowrap; }
+.hx-old { font-family: "Montserrat", sans-serif; font-weight: 600; font-size: clamp(20px, 1.6vw, 24px); color: rgba(255,255,255,.55); text-decoration: line-through; text-decoration-thickness: 2px; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+.hx-optlabel-wrap { margin-top: 26px; }
+.hx-optlabel { font-family: "DM Sans", sans-serif; font-size: 14px; color: rgba(255,255,255,.85); margin: 0; }
+.hx-picks { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.hx-pick { width: 56px; height: 56px; border-radius: 999px; padding: 0; cursor: pointer; display: grid; place-items: center; overflow: hidden;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: background-color .35s, border-color .35s, box-shadow .35s; }
+.hx-pick:hover { border-color: #fff; }
+.hx-pick[aria-pressed="true"] { background: #fff; border-color: #fff; box-shadow: 0 10px 25px -8px rgba(0,0,0,.35); }
+.hx-pick-box { width: 72%; height: 72%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.hx-pick-box img { width: 85%; height: 88%; object-fit: contain; }
+
+/* ---------- rodapé do hero ---------- */
+.hx-bottom { position: absolute; left: 5vw; right: 5vw; bottom: 22px; z-index: 3; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; pointer-events: none; }
+.hx-bottom > * { pointer-events: auto; }
+.hx-icons { display: flex; gap: 10px; justify-self: start; }
+.hx-mini { width: 38px; height: 38px; border-radius: 999px; display: grid; place-items: center; color: #fff; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.08); transition: background-color .3s, color .3s; }
+.hx-mini:hover { background: #fff; color: #111; }
+.hx-bottom-center { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.hx-tagline { font-family: "Montserrat", sans-serif; font-weight: 500; font-size: 18px; line-height: 1.3; text-align: center; color: rgba(255,255,255,.92); margin: 0; }
+.hx-dots { display: flex; gap: 6px; }
+.hx-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: rgba(255,255,255,.4); cursor: pointer; transition: width .5s cubic-bezier(.16,1,.3,1), background-color .3s; }
+.hx-dot[aria-current="true"] { width: 24px; background: #fff; }
+.hx-next { justify-self: end; display: flex; flex-direction: column; align-items: center; gap: 8px; background: none; border: 0; color: #fff; cursor: pointer; padding: 0; }
+.hx-next-in { position: relative; display: block; width: 104px; height: 104px; }
+.hx-next-hover { position: absolute; inset: 0; transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
+.hx-next:hover .hx-next-hover { transform: scale(1.12) rotate(6deg); }
+.hx-next-float { position: absolute; inset: 0; animation: hxFloat 3.4s ease-in-out infinite; }
+.hx-next-box { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.hx-next-box img { width: 85%; height: 88%; object-fit: contain; filter: drop-shadow(0 12px 12px rgba(0,0,0,.35)); }
+.hx-next-shadow { position: absolute; left: 20%; right: 20%; bottom: -8px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.6), transparent); animation: hxShadow 3.4s ease-in-out infinite; }
+.hx-next-label { font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.75); white-space: nowrap; }
+
+/* ---------- celular / tablet: tudo empilha ---------- */
+@media (max-width: 1023px) {
+  :root { --hx-box: min(78vw, 40vh); }
+  .hx { display: flex; flex-direction: column; align-items: center; padding: 150px 20px 28px; text-align: center; }
+  .hx-stage-scroll { position: relative; left: auto; top: auto; translate: none; order: 1; }
+  .hx-wm-par { top: 34%; }
+  .hx-left { position: relative; left: auto; top: auto; translate: none; order: 2; max-width: 34rem; margin-top: 44px; display: flex; flex-direction: column; align-items: center; }
+  .hx-navrow { order: 9; margin: 22px 0 0; }
+  .hx-kicker { white-space: normal; }
+  .hx-desc { margin-left: auto; margin-right: auto; }
+  .hx-right { position: relative; right: auto; top: auto; translate: none; order: 3; align-items: center; text-align: center; margin-top: 26px; }
+  .hx-picks { justify-content: center; }
+  .hx-bottom { position: relative; left: auto; right: auto; bottom: auto; order: 4; width: 100%; margin-top: 28px; grid-template-columns: 1fr; justify-items: center; gap: 16px; }
+  .hx-icons { display: none; }
+  .hx-tagline { font-size: 16px; }
+  .hx-next { position: absolute; right: 0; top: -2px; display: none; }
+}
+@media (max-width: 1023px) and (min-width: 640px) { .hx-next { display: flex; } }
+
+/* ---------- movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hx-float, .hx-shadow-anim, .hx-next-float, .hx-next-shadow { animation: none !important; }
+}
+
+/* rodapé do hero não fica por baixo do WhatsApp flutuante */
+@media (min-width: 1024px) { .hx-bottom { right: calc(5vw + 70px); } }
+
+/* o cabeçalho fixo não pode capturar toques fora dos seus botões (menu móvel fechado incluso) */
+.site-header { pointer-events: none; }
+.site-header > *:not(.mobile-menu), .site-header .mobile-menu.is-open { pointer-events: auto; }
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hx-pill a { padding: 9px 11px; font-size: 12px; letter-spacing: .04em; }
+  .hx-name { letter-spacing: .16em; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  :root { --hx-box: min(30vw, 54vh); }
+  .hx-left { max-width: 26vw; }
+  .hx-price { font-size: clamp(2.2rem, 3.8vw, 3rem); }
+}

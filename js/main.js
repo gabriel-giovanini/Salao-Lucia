@@ -212,354 +212,7 @@
   /* ---------------- Hero: vitrine de produtos (coreografia orbital 3D do vídeo) ---------------- */
   var products = (C.products || []).filter(function (p) { return p.published; });
 
-  // Permite transição suave das cores do hero só com CSS
-  try {
-    ["--p-glow", "--p-bg", "--p-acc"].forEach(function (n) {
-      CSS.registerProperty({ name: n, syntax: "<color>", inherits: true, initialValue: "#000000" });
-    });
-    $("[data-hero]").style.transition = "--p-glow 1.2s " + EASE + ", --p-bg 1.2s " + EASE + ", --p-acc 1.2s " + EASE;
-  } catch (e) { /* navegador sem suporte: troca direta */ }
-
-  var heroApi = null;
-  function initHero() {
-    var hero = $("[data-hero]");
-    if (!hero || !products.length) return;
-    var idx = 0;
-    var busy = false;
-    var titleEl = $("[data-hero-title]");
-    var kickerEl = $("[data-hero-kicker]");
-    var descEl = $("[data-hero-desc]");
-    var taglineEl = $("[data-hero-tagline]");
-    var priceEl = $("[data-hero-price]");
-    var oldPriceEl = $("[data-hero-old-price]");
-    var buyEl = $("[data-hero-buy]");
-    var wm = $("[data-watermark]");
-    var picks = $("[data-hero-picks]");
-    var stage = $("[data-stage]");
-    var shadowEl = $("[data-stage-shadow]");
-    var orbitCur = $("[data-orbit-cur]");
-    var orbitPrev = $("[data-orbit-prev]");
-    var orbitNext = $("[data-orbit-next]");
-    var two = function (n) { return String(n).padStart(2, "0"); };
-    $$("[data-hero-total]").forEach(function (el) { el.textContent = two(products.length); });
-
-    picks.innerHTML = products.map(function (p, i) {
-      return '<button type="button" class="prod-pick" aria-pressed="' + (i === 0) + '" aria-label="' + esc(p.name) + '" title="' + esc(p.name) + '"><img src="' + media(p.image) + '" alt="" /></button>';
-    }).join("");
-    guardAll(picks);
-    $$(".prod-pick", picks).forEach(function (b, i) { b.addEventListener("click", function () { go(i); }); });
-
-    function applyColors(p) {
-      hero.style.setProperty("--p-glow", p.colors[0]);
-      hero.style.setProperty("--p-bg", p.colors[1]);
-      hero.style.setProperty("--p-acc", p.colors[2]);
-    }
-
-    function syncOrbitImages(i) {
-      var n = products.length;
-      var curP = products[i];
-      var prevP = products[(i - 1 + n) % n];
-      var nextP = products[(i + 1) % n];
-      var curImg = $("img", orbitCur);
-      var prevImg = $("img", orbitPrev);
-      var nextImg = $("img", orbitNext);
-      if (curImg) { curImg.src = media(curP.image); curImg.alt = curP.name; }
-      if (prevImg) { prevImg.src = media(prevP.image); prevImg.alt = ""; }
-      if (nextImg) { nextImg.src = media(nextP.image); nextImg.alt = ""; }
-      if (orbitPrev) orbitPrev.setAttribute("aria-label", "Ver produto anterior: " + prevP.name);
-      if (orbitNext) orbitNext.setAttribute("aria-label", "Ver próximo produto: " + nextP.name);
-      guardAll(hero);
-    }
-
-    function setContent(p, i) {
-      var brandTxt = p.brand || "Moments Paris";
-      kickerEl.textContent = p.type ? brandTxt + " · " + p.type : brandTxt;
-      titleEl.textContent = p.name;
-      splitEl(titleEl);
-      titleEl.classList.add("in");
-      if (descEl) descEl.textContent = p.description || "";
-      if (taglineEl) taglineEl.textContent = p.tagline || "Beleza e cuidado em cada detalhe";
-      priceEl.textContent = p.price || "Sob consulta";
-      if (oldPriceEl) {
-        oldPriceEl.textContent = p.oldPrice || "";
-        oldPriceEl.hidden = !p.oldPrice;
-      }
-      buyEl.href = productWa(p);
-      $$(".prod-pick", picks).forEach(function (b, j) { b.setAttribute("aria-pressed", String(j === i)); });
-      $$("[data-hero-cur]").forEach(function (el) { el.textContent = two(i + 1); });
-    }
-
-    function charsIn(delay) {
-      $$(".split-char", titleEl).forEach(function (c, k) {
-        anim(c, [{ transform: "translateY(100%)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 750, delay: (delay || 0) + k * 20 });
-      });
-    }
-
-    // Posições orbitais responsivas (idênticas ao CSS para interpolar com fluidez no Web Animations API)
-    function orbitCoords() {
-      var mob = window.innerWidth < 1024;
-      return {
-        cur:  { t: "translate3d(0vw, 0vh, 0) scale(1) rotate(0deg)", o: 1, f: "blur(0px) brightness(1)" },
-        prev: mob
-          ? { t: "translate3d(-34vw, -20vh, 0) scale(0.36) rotate(-8deg)", o: 0.4, f: "blur(1.2px) brightness(0.88)" }
-          : { t: "translate3d(-22vw, -44vh, 0) scale(0.45) rotate(-8deg)", o: 0.55, f: "blur(1.2px) brightness(0.88)" },
-        next: mob
-          ? { t: "translate3d(36vw, -16vh, 0) scale(0.34) rotate(6deg)", o: 0.95, f: "blur(0px) brightness(1)" }
-          : { t: "translate3d(40vw, 35vh, 0) scale(0.26) rotate(4deg)", o: 0.96, f: "blur(0px) brightness(1)" },
-        outTop: { t: "translate3d(-30vw, -75vh, 0) scale(0.22) rotate(-18deg)", o: 0, f: "blur(4px) brightness(0.7)" },
-        outBot: { t: "translate3d(55vw, 58vh, 0) scale(0.14) rotate(14deg)", o: 0, f: "blur(3px) brightness(0.8)" },
-      };
-    }
-
-    // Troca de produto com voo 3D igual ao vídeo (Atual -> Topo Esquerdo | Próximo -> Centro | Novo -> Canto Inferior Direito)
-    function go(next, dir) {
-      var n = products.length;
-      next = ((next % n) + n) % n;
-      if (busy || next === idx) return;
-      if (!dir) {
-        var diff = (next - idx + n) % n;
-        dir = diff <= n / 2 ? 1 : -1;
-      }
-      busy = true;
-      var p = products[next];
-      var pos = orbitCoords();
-      var dur = 920;
-      var flyEase = "cubic-bezier(0.22, 1, 0.36, 1)";
-
-      applyColors(p);
-
-      // Se o usuário pulou diretamente para um item que não era o adjacente, pré-atualiza a imagem do slot que vai voar para o centro
-      if (dir > 0 && next !== (idx + 1) % n && orbitNext) {
-        var ni = $("img", orbitNext);
-        if (ni) ni.src = media(p.image);
-      } else if (dir < 0 && next !== (idx - 1 + n) % n && orbitPrev) {
-        var pi = $("img", orbitPrev);
-        if (pi) pi.src = media(p.image);
-      }
-
-      if (shadowEl) {
-        anim(shadowEl, [
-          { transform: "scaleX(1)", opacity: 0.9 },
-          { transform: "scaleX(0.45)", opacity: 0.25 },
-          { transform: "scaleX(1)", opacity: 0.9 },
-        ], { duration: dur, easing: flyEase });
-      }
-
-      var a1, a2, a3;
-      if (dir > 0) {
-        // Avançando (como no vídeo): Centro voa p/ Topo-Esquerdo; Canto-Inferior-Direito voa p/ Centro; Topo-Esquerdo sai por cima e entra novo no Canto
-        a1 = anim(orbitCur, [
-          { transform: orbitCur.style.transform || pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
-          { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
-        ], { duration: dur, easing: flyEase, fill: "forwards" });
-
-        a2 = anim(orbitNext, [
-          { transform: orbitNext.style.transform || pos.next.t, opacity: pos.next.o },
-          { transform: pos.cur.t, opacity: pos.cur.o },
-        ], { duration: dur, easing: flyEase, fill: "forwards" });
-
-        a3 = anim(orbitPrev, [
-          { transform: orbitPrev.style.transform || pos.prev.t, opacity: pos.prev.o },
-          { transform: pos.outTop.t, opacity: 0 },
-        ], { duration: 380, easing: "ease-in", fill: "forwards" });
-
-        setTimeout(function () {
-          var newNextP = products[(next + 1) % n];
-          var prevImg = $("img", orbitPrev);
-          if (prevImg) prevImg.src = media(newNextP.image);
-          a3.cancel();
-          a3 = anim(orbitPrev, [
-            { transform: pos.outBot.t, opacity: 0, filter: "blur(0px) brightness(1)" },
-            { transform: pos.next.t, opacity: pos.next.o, filter: "blur(0px) brightness(1)" },
-          ], { duration: 540, easing: EASE, fill: "forwards" });
-        }, 380);
-      } else {
-        // Voltando: Topo-Esquerdo desce p/ Centro; Centro desce p/ Canto-Inferior-Direito; Canto sai e novo entra no Topo-Esquerdo
-        a1 = anim(orbitCur, [
-          { transform: orbitCur.style.transform || pos.cur.t, opacity: pos.cur.o },
-          { transform: pos.next.t, opacity: pos.next.o },
-        ], { duration: dur, easing: flyEase, fill: "forwards" });
-
-        a2 = anim(orbitPrev, [
-          { transform: orbitPrev.style.transform || pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
-          { transform: pos.cur.t, opacity: pos.cur.o, filter: pos.cur.f },
-        ], { duration: dur, easing: flyEase, fill: "forwards" });
-
-        a3 = anim(orbitNext, [
-          { transform: orbitNext.style.transform || pos.next.t, opacity: pos.next.o },
-          { transform: pos.outBot.t, opacity: 0 },
-        ], { duration: 380, easing: "ease-in", fill: "forwards" });
-
-        setTimeout(function () {
-          var newPrevP = products[(next - 1 + n) % n];
-          var nextImg = $("img", orbitNext);
-          if (nextImg) nextImg.src = media(newPrevP.image);
-          a3.cancel();
-          a3 = anim(orbitNext, [
-            { transform: pos.outTop.t, opacity: 0, filter: pos.prev.f },
-            { transform: pos.prev.t, opacity: pos.prev.o, filter: pos.prev.f },
-          ], { duration: 540, easing: EASE, fill: "forwards" });
-        }, 380);
-      }
-
-      orbitCur.style.transform = "";
-      orbitPrev.style.transform = "";
-      orbitNext.style.transform = "";
-      if (shadowEl) shadowEl.style.transform = "";
-
-      Promise.all([a1.finished, a2.finished]).then(function () {
-        idx = next;
-        syncOrbitImages(idx);
-        [a1, a2, a3].forEach(function (a) { if (a && a.cancel) a.cancel(); });
-        busy = false;
-      });
-
-      var wmOut = anim(wm, [{ opacity: 1 }, { opacity: 0 }], { duration: 280, easing: "ease-in", fill: "forwards" });
-      wmOut.finished.then(function () {
-        wm.textContent = p.watermark || "";
-        anim(wm, [{ transform: "scale(1.12)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 850 });
-        wmOut.cancel();
-      });
-
-      var parts = [kickerEl, titleEl, descEl, priceEl, oldPriceEl, taglineEl].filter(Boolean);
-      var outAnims = parts.map(function (el, k) {
-        return anim(el, [{ transform: "none", opacity: 1 }, { transform: "translateY(-12px)", opacity: 0 }], { duration: 260, delay: k * 20, easing: "ease-in", fill: "forwards" });
-      });
-      setTimeout(function () {
-        setContent(p, next);
-        outAnims.forEach(function (a) { if (a && a.cancel) a.cancel(); });
-        charsIn(0);
-        [kickerEl, descEl, priceEl, oldPriceEl, taglineEl].filter(Boolean).forEach(function (el, k) {
-          anim(el, [{ transform: "translateY(18px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 750, delay: 60 + k * 70 });
-        });
-      }, 300);
-    }
-
-    function nextSlide() { go((idx + 1) % products.length, 1); }
-    function prevSlide() { go((idx - 1 + products.length) % products.length, -1); }
-
-    $$("[data-hero-next]").forEach(function (b) { b.addEventListener("click", nextSlide); });
-    $$("[data-hero-prev]").forEach(function (b) { b.addEventListener("click", prevSlide); });
-    if (orbitNext) orbitNext.addEventListener("click", nextSlide);
-    if (orbitPrev) orbitPrev.addEventListener("click", prevSlide);
-    hero.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") nextSlide();
-      if (e.key === "ArrowLeft") prevSlide();
-    });
-
-    // Arrastar (drag) em tempo real no PC e no Celular com retorno elástico ou troca de produto
-    var drag = null;
-    function applyDragVisual(dx, dy) {
-      var p = Math.max(-1, Math.min(1, dx / 220));
-      var rot = p * 12;
-      var sc = 1 - Math.abs(p) * 0.1;
-      orbitCur.style.transform = "translate3d(" + (dx * 0.55) + "px, " + (dy * 0.14) + "px, 0) scale(" + sc + ") rotate(" + rot + "deg)";
-      if (shadowEl) {
-        shadowEl.style.transform = "translateX(" + (dx * 0.32) + "px) scale(" + (1 - Math.abs(p) * 0.25) + ")";
-      }
-    }
-    function finishDrag(dx, moved) {
-      hero.classList.remove("is-dragging");
-      if (!moved) return;
-      if (Math.abs(dx) > 42) {
-        dx < 0 ? nextSlide() : prevSlide();
-      } else {
-        var curT = orbitCur.style.transform;
-        orbitCur.style.transform = "";
-        if (shadowEl) shadowEl.style.transform = "";
-        anim(orbitCur, [{ transform: curT }, { transform: orbitCoords().cur.t }], { duration: 500, easing: SPRING });
-      }
-    }
-    function onDown(e) {
-      if (busy) return;
-      if (e.pointerType === "mouse" && e.button !== 0) return;
-      if (e.target.closest("a, button")) return;
-      drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, dx: 0, dy: 0, moved: false };
-      hero.classList.add("is-dragging");
-    }
-    function onMove(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      drag.dx = e.clientX - drag.sx;
-      drag.dy = e.clientY - drag.sy;
-      if (!drag.moved && Math.abs(drag.dx) > 6 && Math.abs(drag.dx) > Math.abs(drag.dy)) {
-        drag.moved = true;
-      }
-      if (!drag.moved) return;
-      applyDragVisual(drag.dx, drag.dy);
-    }
-    function onUp(e) {
-      if (!drag || (e.pointerId !== undefined && e.pointerId !== drag.id)) return;
-      var d = drag;
-      drag = null;
-      finishDrag(d.dx, d.moved);
-    }
-    hero.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
-
-    // Suporte dedicado a Touch Events para navegadores mobile (iOS Safari / Chrome Android)
-    var tDrag = null;
-    hero.addEventListener("touchstart", function (e) {
-      if (busy || e.touches.length !== 1) return;
-      if (e.target.closest("a, button")) return;
-      var t = e.touches[0];
-      tDrag = { sx: t.clientX, sy: t.clientY, dx: 0, dy: 0, lock: null };
-    }, { passive: true });
-    hero.addEventListener("touchmove", function (e) {
-      if (!tDrag || e.touches.length !== 1) return;
-      var t = e.touches[0];
-      tDrag.dx = t.clientX - tDrag.sx;
-      tDrag.dy = t.clientY - tDrag.sy;
-      if (!tDrag.lock) {
-        if (Math.abs(tDrag.dx) > 6 && Math.abs(tDrag.dx) > Math.abs(tDrag.dy)) {
-          tDrag.lock = "x";
-          hero.classList.add("is-dragging");
-        } else if (Math.abs(tDrag.dy) > 8) {
-          tDrag.lock = "y";
-        }
-      }
-      if (tDrag.lock === "x") {
-        if (e.cancelable) e.preventDefault();
-        drag = null; // evita duplicação com pointer events
-        applyDragVisual(tDrag.dx, tDrag.dy);
-      }
-    }, { passive: false });
-    function onTouchEnd() {
-      if (!tDrag) return;
-      var td = tDrag;
-      tDrag = null;
-      if (td.lock === "x") finishDrag(td.dx, true);
-    }
-    hero.addEventListener("touchend", onTouchEnd, { passive: true });
-    hero.addEventListener("touchcancel", onTouchEnd, { passive: true });
-
-    var first = products[0];
-    wm.textContent = first.watermark || "";
-    applyColors(first);
-    syncOrbitImages(0);
-    setContent(first, 0);
-    titleEl.classList.remove("in");
-    guardAll(hero);
-
-    heroApi = {
-      intro: function () {
-        var pos = orbitCoords();
-        titleEl.classList.add("in");
-        anim(orbitCur, [{ transform: "translate3d(0vw, 12vh, 0) scale(0.75)", opacity: 0 }, { transform: pos.cur.t, opacity: 1 }], { duration: 1350 });
-        anim(orbitPrev, [{ transform: pos.outTop.t, opacity: 0 }, { transform: pos.prev.t, opacity: pos.prev.o }], { duration: 1400, delay: 180 });
-        anim(orbitNext, [{ transform: pos.outBot.t, opacity: 0 }, { transform: pos.next.t, opacity: pos.next.o }], { duration: 1400, delay: 260 });
-        anim(wm, [{ opacity: 0 }, { opacity: 1 }], { duration: 1500 });
-        charsIn(180);
-        [kickerEl, descEl, buyEl, priceEl, oldPriceEl, taglineEl].filter(Boolean).concat($$("[data-hero-left] .hero-arrow-btn, [data-hero-left] .counter-num")).forEach(function (el, k) {
-          anim(el, [{ transform: "translateY(22px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 950, delay: 220 + k * 65 });
-        });
-        $$(".prod-pick", picks).forEach(function (el, k) {
-          anim(el, [{ transform: "scale(.5)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 850, delay: 450 + k * 65, easing: SPRING });
-        });
-      },
-    };
-  }
+  // O topo (hero) agora vive em js/hero.js e expõe window.SLFHero.
 
   /* ---------------- Faixas: só se movem enquanto a página rola ---------------- */
   function initMarquees() {
@@ -995,18 +648,46 @@
     var pill = $("[data-nav]");
     var ind = $("[data-nav-indicator]");
     var links = $$("a", pill);
+    var mobileLinks = $$("[data-nav-mobile] a");
+    var current = null;
     function moveTo(link) {
       if (!link) return;
+      current = link;
+      var key = link.getAttribute("data-cat") || link.getAttribute("href");
+      links.concat(mobileLinks).forEach(function (l) {
+        l.classList.toggle("is-active", (l.getAttribute("data-cat") || l.getAttribute("href")) === key);
+      });
       ind.style.opacity = "1";
-      ind.style.width = link.offsetWidth + "px";
-      ind.style.transform = "translateX(" + link.offsetLeft + "px)";
-      links.forEach(function (l) { l.classList.toggle("is-active", l === link); });
+      if (gsap) gsap.to(ind, { x: link.offsetLeft, width: link.offsetWidth, duration: 0.9, ease: "elastic.out(1, .75)", overwrite: true });
+      else { ind.style.width = link.offsetWidth + "px"; ind.style.transform = "translateX(" + link.offsetLeft + "px)"; }
     }
-    var sections = links.map(function (l) { return document.querySelector(l.getAttribute("href")); });
+    function heroLink() {
+      var cat = window.SLFHero ? window.SLFHero.category() : "moments";
+      return links.filter(function (l) { return l.getAttribute("data-cat") === cat; })[0] || links[0];
+    }
+    var hero = $("[data-hero]");
+    var heroVisible = true;
+    var sectionLinks = links.filter(function (l) { return !l.hasAttribute("data-cat"); });
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) moveTo(links[sections.indexOf(en.target)]); });
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        if (en.target === hero) { heroVisible = true; moveTo(heroLink()); return; }
+        heroVisible = false;
+        moveTo(sectionLinks.filter(function (l) { return document.querySelector(l.getAttribute("href")) === en.target; })[0]);
+      });
     }, { rootMargin: "-45% 0px -50% 0px" });
-    sections.forEach(function (s) { if (s) io.observe(s); });
+    [hero].concat(sectionLinks.map(function (l) { return document.querySelector(l.getAttribute("href")); })).forEach(function (sec) { if (sec) io.observe(sec); });
+    // troca de produto no topo move o indicador para a categoria
+    document.addEventListener("slf:product", function () { if (heroVisible) moveTo(heroLink()); });
+    // categorias levam ao primeiro produto daquela marca
+    document.addEventListener("click", function (e) {
+      var c = e.target.closest("[data-cat]");
+      if (!c || !window.SLFHero) return;
+      window.SLFHero.goToCategory(c.getAttribute("data-cat"));
+    });
+    var place = function () { if (current) gsap ? gsap.set(ind, { x: current.offsetLeft, width: current.offsetWidth }) : moveTo(current); };
+    window.addEventListener("resize", place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
 
     var header = $(".site-header");
     var bar = $("[data-progress]");
@@ -1067,15 +748,6 @@
       });
     });
 
-    var dot = $(".cursor-dot"), ring = $(".cursor-ring");
-    document.body.classList.add("has-cursor");
-    // cursor: atualiza só quando o mouse se move (sem loop contínuo)
-    window.addEventListener("pointermove", function (e) {
-      var t = "translate(" + e.clientX + "px," + e.clientY + "px)";
-      dot.style.transform = t;
-      ring.style.transform = t;
-      ring.classList.toggle("is-hover", !!(e.target.closest && e.target.closest("a, button, [data-tilt], input, select, textarea")));
-    }, { passive: true });
   }
 
   /* ---------------- Eiffel (desenho de traço) ---------------- */
@@ -1110,8 +782,8 @@
     if (hasST) {
       gsap.registerPlugin(window.ScrollTrigger);
       // hero se afasta ao rolar
-      gsap.to("[data-hero-orbit]", { yPercent: 18, scale: 0.9, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
-      gsap.to("[data-hero-left], [data-hero-right]", { y: -80, opacity: 0.2, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
+      gsap.to("[data-stage-scroll]", { yPercent: 18, scale: 0.9, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
+      if (window.innerWidth >= 1024) gsap.to("[data-hero-left], [data-hero-right]", { y: -80, opacity: 0.2, ease: "none", scrollTrigger: { trigger: "[data-hero]", start: "top top", end: "bottom top", scrub: true } });
       var cine = $("[data-cine]");
       if (cine) gsap.fromTo(cine, { scale: 0.84, borderRadius: "80px" }, { scale: 1, borderRadius: "40px", ease: "none", scrollTrigger: { trigger: cine, start: "top bottom", end: "top 20%", scrub: 1 } });
       $$("[data-parallax-x]").forEach(function (el) {
@@ -1139,8 +811,7 @@
       done = true;
       if (pl) pl.classList.add("is-done");
       document.body.classList.remove("is-loading");
-      anim($(".site-header"), [{ transform: "translateY(-120%)" }, { transform: "none" }], { duration: 1200, delay: 250, fill: "none" });
-      if (heroApi) heroApi.intro();
+      if (window.SLFHero) window.SLFHero.intro();
       observeReveals(document);
       setTimeout(function () { if (pl) pl.remove(); }, 1300);
     }
@@ -1151,7 +822,6 @@
   fillGlobals();
   $$("[data-split]").forEach(splitEl);
   guardAll(document);
-  initHero();
   initMarquees();
   initProducts();
   initVideo();
